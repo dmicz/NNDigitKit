@@ -1,6 +1,7 @@
 #include "matrix.h"
+#include <stdlib.h>
 
-void initialize_matrix(struct Matrix* matrix, const int rows, const int columns) {
+void allocate_matrix(struct Matrix* matrix, const int rows, const int columns) {
 	matrix->rows = rows;
 	matrix->columns = columns;
 	matrix->elements = malloc(rows * sizeof(double*));

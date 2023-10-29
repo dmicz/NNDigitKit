@@ -6,7 +6,7 @@ struct Vector {
 	double* elements;
 };
 
-void initialize_vector(struct Vector* vector, const int length);
+void allocate_vector(struct Vector* vector, const int length);
 
 void free_vector(struct Vector* vector);
 

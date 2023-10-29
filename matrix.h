@@ -6,7 +6,8 @@ struct Matrix {
 	double** elements;
 };
 
-void initialize_matrix(struct Matrix* matrix, const int rows, const int columns);
+void allocate_matrix(struct Matrix* matrix, const int rows, const int columns);
 void free_matrix(struct Matrix* matrix);
+
 
 #endif
