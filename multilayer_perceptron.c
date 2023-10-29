@@ -1,5 +1,6 @@
 #include "multilayer_perceptron.h"
 #include "util/math_utils.h"
+#include "linalg/vector.h"
 
 void random_init_vector(struct Vector* vector) {
 	for (int i = 0; i < vector->length; i++) {
@@ -15,7 +16,14 @@ void random_init_matrix(struct Matrix* matrix) {
 	}
 }
 
-void feed_forward(struct Vector** biases, struct Matrix** weights,
+void feed_forward(int layer_count, struct Vector** biases, struct Matrix** weights,
 	struct Vector* input, struct Vector* output) {
+	struct Vector activation;
+	struct Vector* activations;
+	allocate_vector(&activation, biases[0]->length);
 
+
+
+
+	free_vector(&activation);
 }
