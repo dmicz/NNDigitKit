@@ -70,6 +70,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -128,19 +131,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="file.c" />
+    <ClCompile Include="linalg\matrix.c" />
+    <ClCompile Include="linalg\vector.c" />
     <ClCompile Include="main.c" />
-    <ClCompile Include="math_utils.c" />
-    <ClCompile Include="matrix.c" />
+    <ClCompile Include="util\file.c" />
+    <ClCompile Include="util\math_utils.c" />
     <ClCompile Include="multilayer_perceptron.c" />
-    <ClCompile Include="vector.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="file.h" />
-    <ClInclude Include="math_utils.h" />
-    <ClInclude Include="matrix.h" />
+    <ClInclude Include="linalg\matrix.h" />
+    <ClInclude Include="linalg\vector.h" />
+    <ClInclude Include="linalg\vector3.h" />
+    <ClInclude Include="util\file.h" />
+    <ClInclude Include="util\math_utils.h" />
     <ClInclude Include="multilayer_perceptron.h" />
-    <ClInclude Include="vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

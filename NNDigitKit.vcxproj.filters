@@ -18,37 +18,40 @@
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="math_utils.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vector.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="matrix.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="file.c">
+    <ClCompile Include="util\math_utils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="multilayer_perceptron.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="linalg\matrix.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="linalg\vector.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util\file.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="vector.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="math_utils.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="matrix.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="file.h">
+    <ClInclude Include="util\math_utils.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="multilayer_perceptron.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="linalg\vector3.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="linalg\matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="linalg\vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\file.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

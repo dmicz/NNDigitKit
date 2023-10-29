@@ -1,5 +1,5 @@
 #include "multilayer_perceptron.h"
-#include "math_utils.h"
+#include "util/math_utils.h"
 
 void random_init_vector(struct Vector* vector) {
 	for (int i = 0; i < vector->length; i++) {

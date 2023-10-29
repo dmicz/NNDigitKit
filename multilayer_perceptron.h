@@ -1,8 +1,8 @@
 #ifndef MULTILAYER_PERCEPTRON_H
 #define MULTILAYER_PERCEPTRON_H
 
-#include "matrix.h"
-#include "vector.h"
+#include "linalg/matrix.h"
+#include "linalg/vector.h"
 
 void random_init_vector(struct Vector* vector);
 void random_init_matrix(struct Matrix* matrix);

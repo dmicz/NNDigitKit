@@ -2,10 +2,10 @@
 #include <math.h>	/* exp()	*/
 #include <stdlib.h>	/* rand()	*/
 
-#include "math_utils.h"
-#include "vector.h"
-#include "matrix.h"
-#include "file.h"
+#include "util/math_utils.h"
+#include "util/file.h"
+#include "linalg/vector.h"
+#include "linalg/matrix.h"
 #include "multilayer_perceptron.h"
 
 int main() {

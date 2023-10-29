@@ -1,7 +1,7 @@
 #include "file.h"
 
 #include <stdlib.h>
-#include "vector.h"
+#include "../linalg/vector.h"
 
 int read_image_file(const FILE* file, struct Vector** images) {
 	unsigned char* magic_number_bytes = malloc(4 * sizeof(char));
