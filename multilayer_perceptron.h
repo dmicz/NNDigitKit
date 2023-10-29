@@ -7,7 +7,7 @@
 void random_init_vector(struct Vector* vector);
 void random_init_matrix(struct Matrix* matrix);
 
-void feed_forward(struct Vector** biases, struct Matrix** weights, 
-	struct Vector* input, struct Vector* output);
+struct Vector* feed_forward(int layer_count, const struct Vector** biases, const struct Matrix** weights,
+	const struct Vector* input);
 
 #endif

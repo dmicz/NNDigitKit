@@ -6,8 +6,14 @@ struct Vector {
 	double* elements;
 };
 
-void allocate_vector(struct Vector* vector, const int length);
+struct Vector* allocate_vector(const int length);
 
 void free_vector(struct Vector* vector);
+
+struct Vector* dot_product(const struct Vector* vector1, const struct Vector* vector2);
+
+struct Vector* add_vectors(const struct Vector* vector1, const struct Vector* vector2);
+
+struct Vector* sigmoid_vector(const struct Vector* vector);
 
 #endif
