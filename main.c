@@ -2,38 +2,8 @@
 #include <math.h>	/* exp()	*/
 #include <stdlib.h>	/* rand()	*/
 
-/*
- * generate_std_norm_dist
- * --------------------
- * computes an approximate random variable from a standard distribution,
- * N(0,1), using an Irwin-Hall distribution with n=12 and rand() normalized
- * to (0.0,1.0).
- */
-double generate_std_norm_dist() {
-	double irwin_hall_var = 0.0;
-	for (int i = 0; i < 12; i++) {
-		irwin_hall_var += (double)rand() / (double)RAND_MAX;
-	}
-	return irwin_hall_var - 6;
-}
-
-double sigmoid(const double z) {
-	return 1 / (1 + exp(-z));
-}
-
-struct Vector {
-	int length;
-	double* elements;
-};
-
-void initialize_vector(struct Vector* vector, const int length) {
-	vector->length = length;
-	vector->elements = (double*)malloc(length * sizeof(double));
-}
-
-void free_vector(struct Vector* vector) {
-	free(vector->elements);
-}
+#include "math_utils.h"
+#include "vector.h"
 
 struct Matrix {
 	int rows, columns;
@@ -135,9 +105,12 @@ int main() {
 	char* training_labels = NULL;
 	int training_labels_count = read_label_file(training_labels_file, &training_labels);
 	int training_images_count = read_image_file(training_images_file, &training_images);
+
+	fclose(training_labels_file);
+	fclose(training_images_file);
 	for (int i = 0; i < 28; i++) {
 		for (int j = 0; j < 28; j++) {
-			if (training_images[59999].elements[i * 28 + j] > 0.5) {
+			if (training_images[16584].elements[i * 28 + j] > 0.5) {
 				printf("#");
 			}
 			else {
@@ -146,5 +119,10 @@ int main() {
 		}
 		printf("\n");
 	}
+	for (int i = 0; i < training_images_count; i++) {
+		free_vector(&training_images[i]);
+	}
+	free(training_images);
+	free(training_labels);
 	return 0;
 }
