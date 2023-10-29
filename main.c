@@ -137,7 +137,7 @@ int main() {
 	int training_images_count = read_image_file(training_images_file, &training_images);
 	for (int i = 0; i < 28; i++) {
 		for (int j = 0; j < 28; j++) {
-			if (training_images[0].elements[i * 28 + j] > 0.5) {
+			if (training_images[59999].elements[i * 28 + j] > 0.5) {
 				printf("#");
 			}
 			else {
