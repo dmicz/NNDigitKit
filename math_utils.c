@@ -13,3 +13,7 @@ double generate_std_norm_dist() {
 double sigmoid(const double z) {
 	return 1 / (1 + exp(-z));
 }
+
+int byte_array_to_big_endian(unsigned char* bytes) {
+	return (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | (bytes[3]);
+}

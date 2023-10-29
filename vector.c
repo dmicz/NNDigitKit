@@ -3,7 +3,7 @@
 
 void initialize_vector(struct Vector* vector, const int length) {
 	vector->length = length;
-	vector->elements = (double*)malloc(length * sizeof(double));
+	vector->elements = malloc(length * sizeof(double));
 	return;
 }
 

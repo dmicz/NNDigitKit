@@ -128,12 +128,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="file.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="math_utils.c" />
+    <ClCompile Include="matrix.c" />
     <ClCompile Include="vector.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="file.h" />
     <ClInclude Include="math_utils.h" />
+    <ClInclude Include="matrix.h" />
     <ClInclude Include="vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
