@@ -56,33 +56,73 @@ void free_matrix(struct Matrix* matrix) {
 	free(matrix->elements);
 }
 
-void read_image_file(const FILE* file, struct Vector* images) {
-
+int byte_array_to_big_endian(unsigned char* bytes) {
+	return (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | (bytes[3]);
 }
 
-void read_label_file(const FILE* file, char** labels) {
+int read_image_file(const FILE* file, struct Vector** images) {
 	unsigned char* magic_number_bytes = malloc(4 * sizeof(char));
-	unsigned char* num_labels_bytes = malloc(4 * sizeof(char));
-	fread((void*)magic_number_bytes, sizeof(char), 4, file);
-	fread((void*)num_labels_bytes, sizeof(char), 4, file);
-	int num_labels = (num_labels_bytes[0] << 24) | (num_labels_bytes[1] << 16) | (num_labels_bytes[2] << 8) | (num_labels_bytes[3]);
-	char* new_labels = malloc(num_labels * sizeof(char));
-	fread((void*)new_labels, sizeof(char), num_labels, file);
-	*labels = new_labels;
-#if 0
-	labels = (int*)malloc(num_labels * sizeof(int));
+	unsigned char* image_count_bytes = malloc(4 * sizeof(char));
+	unsigned char* row_count_bytes = malloc(4 * sizeof(char));
+	unsigned char* column_count_bytes = malloc(4 * sizeof(char));
 
-	for (int i = 0; i < &num_labels; i++) {
-		fread((void))
+	fread((void*)magic_number_bytes, sizeof(char), 4, file);
+	fread((void*)image_count_bytes, sizeof(char), 4, file);
+	fread((void*)row_count_bytes, sizeof(char), 4, file);
+	fread((void*)column_count_bytes, sizeof(char), 4, file);
+
+	int image_count = byte_array_to_big_endian(image_count_bytes);
+	int row_count = byte_array_to_big_endian(row_count_bytes);
+	int column_count = byte_array_to_big_endian(column_count_bytes);
+
+	int pixel_count = image_count * row_count * column_count;
+
+	unsigned char* new_images_bytes = malloc(pixel_count * sizeof(char));
+	fread((void*)new_images_bytes, sizeof(char), pixel_count, file);
+
+	int vector_size = row_count * column_count;
+	struct Vector* new_images = malloc(image_count * sizeof(struct Vector));
+	for (int i = 0; i < image_count; i++) {
+		initialize_vector(&(new_images[i]), vector_size);
+		for (int j = 0; j < vector_size; j++) {
+			new_images[i].elements[j] = ((double)new_images_bytes[i * vector_size + j]) / 256.;
+		}
 	}
-#endif
+
+	free(magic_number_bytes);
+	free(image_count_bytes);
+	free(row_count_bytes);
+	free(column_count_bytes);
+	free(new_images_bytes);
+
+	*images = new_images;
+	return image_count;
+}
+
+int read_label_file(const FILE* file, char** labels) {
+	unsigned char* magic_number_bytes = malloc(4 * sizeof(char));
+	unsigned char* label_count_bytes = malloc(4 * sizeof(char));
+
+	fread((void*)magic_number_bytes, sizeof(char), 4, file);
+	fread((void*)label_count_bytes, sizeof(char), 4, file);
+
+	int label_count = byte_array_to_big_endian(label_count_bytes);
+
+	char* new_labels = malloc(label_count * sizeof(char));
+	fread((void*)new_labels, sizeof(char), label_count, file);
+	*labels = new_labels;
+
+	free(magic_number_bytes);
+	free(label_count_bytes);
+
+	return label_count;
 }
 
 int main() {
 	srand(1337); /* set to constant for debugging purposes */
 
 	int layer_sizes[] = { 784, 16, 16, 10 };
-	int num_layers = sizeof(layer_sizes) / sizeof(int);
+	int layer_count = sizeof(layer_sizes) / sizeof(int);
 
 	FILE* training_images_file = fopen("mnist/train-images.idx3-ubyte", "rb");
 	FILE* training_labels_file = fopen("mnist/train-labels.idx1-ubyte", "rb");
@@ -93,7 +133,18 @@ int main() {
 
 	struct Vector* training_images = NULL;
 	char* training_labels = NULL;
-	read_label_file(training_labels_file, &training_labels);
-	printf("%c", training_labels[0] + '0');
+	int training_labels_count = read_label_file(training_labels_file, &training_labels);
+	int training_images_count = read_image_file(training_images_file, &training_images);
+	for (int i = 0; i < 28; i++) {
+		for (int j = 0; j < 28; j++) {
+			if (training_images[0].elements[i * 28 + j] > 0.5) {
+				printf("#");
+			}
+			else {
+				printf(".");
+			}
+		}
+		printf("\n");
+	}
 	return 0;
 }
