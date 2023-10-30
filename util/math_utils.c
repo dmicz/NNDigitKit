@@ -14,6 +14,11 @@ double sigmoid(const double z) {
 	return 1 / (1 + exp(-z));
 }
 
+double sigmoid_prime(const double z) {
+	double ez = exp(-z);
+	return ez / ((1 + ez) * (1 + ez));
+}
+
 int byte_array_to_big_endian(unsigned char* bytes) {
 	return (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | (bytes[3]);
 }

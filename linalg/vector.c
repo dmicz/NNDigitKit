@@ -9,6 +9,12 @@ struct Vector* allocate_vector(const int length) {
 	return vector;
 }
 
+void zero_vector(struct Vector* vector) {
+	for (int i = 0; i < vector->length; i++) {
+		vector->elements[i] = 0.;
+	}
+}
+
 void free_vector(struct Vector* vector) {
 	free(vector->elements);
 	free(vector);
@@ -37,10 +43,40 @@ struct Vector* add_vectors(const struct Vector* vector1, const struct Vector* ve
 	return result;
 }
 
+struct Vector* subtract_vectors(const struct Vector* vector1, const struct Vector* vector2) {
+	if (vector1->length != vector2->length) {
+		return NULL;
+	}
+	struct Vector* result = allocate_vector(vector1->length);
+	for (int i = 0; i < vector1->length; i++) {
+		result->elements[i] = vector1->elements[i] - vector2->elements[i];
+	}
+	return result;
+}
+
+struct Vector* elementwise_product(const struct Vector* vector1, const struct Vector* vector2) {
+	if (vector1->length != vector2->length) {
+		return NULL;
+	}
+	struct Vector* result = allocate_vector(vector1->length);
+	for (int i = 0; i < vector1->length; i++) {
+		result->elements[i] = vector1->elements[i] * vector2->elements[i];
+	}
+	return result;
+}
+
 struct Vector* sigmoid_vector(const struct Vector* vector) {
 	struct Vector* result = allocate_vector(vector->length);
 	for (int i = 0; i < vector->length; i++) {
 		result->elements[i] = sigmoid(vector->elements[i]);
+	}
+	return result;
+}
+
+struct Vector* sigmoid_prime_vector(const struct Vector* vector) {
+	struct Vector* result = allocate_vector(vector->length);
+	for (int i = 0; i < vector->length; i++) {
+		result->elements[i] = sigmoid_prime(vector->elements[i]);
 	}
 	return result;
 }

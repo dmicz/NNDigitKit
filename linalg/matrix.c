@@ -12,6 +12,14 @@ struct Matrix* allocate_matrix(const int rows, const int columns) {
 	return matrix;
 }
 
+void zero_matrix(struct Matrix* matrix) {
+	for (int i = 0; i < matrix->rows; i++) {
+		for (int j = 0; j < matrix->columns; j++) {
+			matrix->elements[i][j] = 0.;
+		}
+	}
+}
+
 void free_matrix(struct Matrix* matrix) {
 	for (int i = 0; i < matrix->rows; i++) {
 		free(matrix->elements[i]);

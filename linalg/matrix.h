@@ -9,6 +9,9 @@ struct Matrix {
 };
 
 struct Matrix* allocate_matrix(const int rows, const int columns);
+
+void zero_matrix(struct Matrix* matrix);
+
 void free_matrix(struct Matrix* matrix);
 
 struct Vector* matrix_vector_multiply(const struct Matrix* matrix, const struct Vector* vector);

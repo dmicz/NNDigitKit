@@ -41,10 +41,11 @@ int main() {
 	}
 
 	struct Vector* output;
-	output = feed_forward(layer_count, biases, weights, training_images[0]);
+	output = feed_forward(layer_count, weights, biases, training_images[0]);
 	for (int i = 0; i < output->length; i++) {
 		printf("%d: %f\n", i, output->elements[i]);
 	}
+	free_vector(output);
 
 	for (int i = 0; i < layer_count - 1; i++) {
 		free_matrix(weights[i]);
