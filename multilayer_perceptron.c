@@ -48,7 +48,7 @@ struct Vector* feed_forward(const int layer_count, const struct Matrix** weights
 	return activation;
 }
 
-void backprop(struct Matrix*** nabla_weights, struct Vector*** nabla_biases,
+void backprop(struct Matrix*** new_weights, struct Vector*** new_biases,
 	const struct Matrix** weights, const struct Vector** biases,
 	const struct Vector* input, const char y, const int layer_count) {
 	
@@ -86,11 +86,26 @@ void backprop(struct Matrix*** nabla_weights, struct Vector*** nabla_biases,
 
 	struct Vector* y_vector = create_label_vector(biases[layer_count - 2]->length, y - '0');
 	struct Vector* cost = subtract_vectors(activations[layer_count - 1], y_vector);
-	free(y_vector);
-	struct Vector* delta = elementwise_product(cost, sigmoid_prime_vector(z_vectors[layer_count - 1]));
-	free(cost);
+	free_vector(y_vector);
+	struct Vector* sp = sigmoid_prime_vector(z_vectors[layer_count - 1]);
+	struct Vector* delta = elementwise_product(cost, sp);
+	free_vector(sp);
+	free_vector(cost);
 	nabla_biases[layer_count - 2] = delta;
+	nabla_weights[layer_count - 2] = dot_product(delta, activations[layer_count - 1]);
 
+	for (int i = layer_count - 2; i > 0; i--) {
+		struct Vector* z = z_vectors[i];
+		struct Vector* sp = sigmoid_prime_vector(z);
+		free_vector(z);
+		struct Vector* temp = dot_product(weights[i - 1], delta);
+		struct Vector* delta = elementwise_product(temp, sp);
+
+		free_vector(sp);
+		free_vector(temp);
+		nabla_biases[i - 1] = delta;
+		nabla_weights[i - 1] = dot_product(delta, activations[i]);
+	}
 
 	for (int i = 0; i < layer_count - 1; i++) {
 		free_matrix(nabla_weights[i]);
