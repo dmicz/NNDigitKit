@@ -12,17 +12,17 @@ void zero_vector(struct Vector* vector);
 
 void free_vector(struct Vector* vector);
 
-struct Vector* dot_product(const struct Vector* vector1, const struct Vector* vector2);
+void dot_product(const struct Vector* vector1, const struct Vector* vector2, struct Vector* result);
 
-struct Vector* add_vectors(const struct Vector* vector1, const struct Vector* vector2);
+void add_vectors(const struct Vector* vector1, const struct Vector* vector2, struct Vector* result);
 
-struct Vector* subtract_vectors(const struct Vector* vector1, const struct Vector* vector2);
+void subtract_vectors(const struct Vector* vector1, const struct Vector* vector2, struct Vector* result);
 
-struct Vector* elementwise_product(const struct Vector* vector1, const struct Vector* vector2);
+void elementwise_product(const struct Vector* vector1, const struct Vector* vector2, struct Vector* result);
 
-struct Vector* sigmoid_vector(const struct Vector* vector);
+void sigmoid_vector(const struct Vector* vector, struct Vector* result);
 
-struct Vector* sigmoid_prime_vector(const struct Vector* vector);
+void sigmoid_prime_vector(const struct Vector* vector, struct Vector* result);
 
 
 #endif

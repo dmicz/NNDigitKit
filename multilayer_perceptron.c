@@ -3,6 +3,8 @@
 #include "linalg/vector.h"
 #include <stdlib.h>
 
+typedef double vec4[4];
+
 void random_init_vector(struct Vector* vector) {
 	for (int i = 0; i < vector->length; i++) {
 		vector->elements[i] = generate_std_norm_dist();
@@ -48,19 +50,9 @@ struct Vector* feed_forward(const int layer_count, const struct Matrix** weights
 	return activation;
 }
 
-void backprop(struct Matrix*** new_weights, struct Vector*** new_biases,
+void backprop(struct Matrix*** nabla_weights, struct Vector*** nabla_biases,
 	const struct Matrix** weights, const struct Vector** biases,
 	const struct Vector* input, const char y, const int layer_count) {
-	
-	struct Matrix** nabla_weights = malloc((layer_count - 1) * sizeof(struct Matrix*));
-	struct Vector** nabla_biases = malloc((layer_count - 1) * sizeof(struct Vector*));
-
-	for (int i = 0; i < layer_count - 1; i++) {
-		nabla_weights[i] = allocate_matrix(weights[i]->rows, weights[i]->columns);
-		nabla_biases[i] = allocate_vector(biases[i]->length);
-		zero_matrix(nabla_weights);
-		zero_vector(nabla_biases);
-	}
 
 	struct Vector* activation = allocate_vector(input->length);
 	struct Vector** activations = malloc(layer_count * sizeof(struct Vector*));
@@ -91,6 +83,7 @@ void backprop(struct Matrix*** new_weights, struct Vector*** new_biases,
 	struct Vector* delta = elementwise_product(cost, sp);
 	free_vector(sp);
 	free_vector(cost);
+
 	nabla_biases[layer_count - 2] = delta;
 	nabla_weights[layer_count - 2] = dot_product(delta, activations[layer_count - 1]);
 
@@ -108,13 +101,9 @@ void backprop(struct Matrix*** new_weights, struct Vector*** new_biases,
 	}
 
 	for (int i = 0; i < layer_count - 1; i++) {
-		free_matrix(nabla_weights[i]);
-		free_vector(nabla_biases[i]);
 		free_vector(activations[i]);
 		free_vector(z_vectors[i]);
 	}
-	free(nabla_weights);
-	free(nabla_biases);
 	free(activations);
 	free(z_vectors);
 }
@@ -133,8 +122,13 @@ void minibatch_training(const struct Matrix** weights, const struct Vector** bia
 		zero_vector(nabla_biases);
 	}
 
+	for (int i = 0; i < minibatch_size; i++) {
+		backprop(&nabla_weights, &nabla_biases, weights, biases, 
+			training_images[labels_to_train[i]], training_labels[labels_to_train[i]], layer_count);
 
-	
+	}
+
+
 	for (int i = 0; i < layer_count - 1; i++) {
 		free_matrix(nabla_weights[i]);
 		free_vector(nabla_biases[i]);

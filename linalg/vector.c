@@ -20,63 +20,103 @@ void free_vector(struct Vector* vector) {
 	free(vector);
 }
 
-struct Vector* dot_product(const struct Vector* vector1, const struct Vector* vector2) {
+void dot_product(const struct Vector* vector1, const struct Vector* vector2, struct Vector* result) {
 	if (vector1->length != vector2->length) {
 		return NULL;
 	}
-	struct Vector* result = allocate_vector(vector1->length);
-	for (int i = 0; i < vector1->length; i++) {
-		result->elements[i] = vector1->elements[i] * vector2->elements[i];
+	if (result != vector1) {
+		if (result->length != vector1->length) {
+			free(result->elements);
+			result->elements = malloc(vector1->length * sizeof(double));
+			result->length = vector1->length;
+		}
+
+		for (int i = 0; i < vector1->length; i++) {
+			result->elements[i] = vector1->elements[i] * vector2->elements[i];
+		}
 	}
-	return result;
+	else {
+		for (int i = 0; i < vector1->length; i++) {
+			result->elements[i] *= vector2->elements[i];
+		}
+	}
 }
 
 
-struct Vector* add_vectors(const struct Vector* vector1, const struct Vector* vector2) {
+void add_vectors(const struct Vector* vector1, const struct Vector* vector2, struct Vector* result) {
 	if (vector1->length != vector2->length) {
 		return NULL;
 	}
-	struct Vector* result = allocate_vector(vector1->length);
-	for (int i = 0; i < vector1->length; i++) {
-		result->elements[i] = vector1->elements[i] + vector2->elements[i];
+	if (result != vector1) {
+		if (result->length != vector1->length) {
+			free(result->elements);
+			result->elements = malloc(vector1->length * sizeof(double));
+			result->length = vector1->length;
+		}
+
+		for (int i = 0; i < vector1->length; i++) {
+			result->elements[i] = vector1->elements[i] + vector2->elements[i];
+		}
 	}
-	return result;
+	else {
+		for (int i = 0; i < vector1->length; i++) {
+			result->elements[i] += vector2->elements[i];
+		}
+	}
 }
 
-struct Vector* subtract_vectors(const struct Vector* vector1, const struct Vector* vector2) {
+void subtract_vectors(const struct Vector* vector1, const struct Vector* vector2, struct Vector* result) {
 	if (vector1->length != vector2->length) {
 		return NULL;
 	}
-	struct Vector* result = allocate_vector(vector1->length);
-	for (int i = 0; i < vector1->length; i++) {
-		result->elements[i] = vector1->elements[i] - vector2->elements[i];
+	if (result != vector1) {
+		if (result->length != vector1->length) {
+			free(result->elements);
+			result->elements = malloc(vector1->length * sizeof(double));
+			result->length = vector1->length;
+		}
+
+		for (int i = 0; i < vector1->length; i++) {
+			result->elements[i] = vector1->elements[i] - vector2->elements[i];
+		}
 	}
-	return result;
+	else {
+		for (int i = 0; i < vector1->length; i++) {
+			result->elements[i] -= vector2->elements[i];
+		}
+	}
 }
 
-struct Vector* elementwise_product(const struct Vector* vector1, const struct Vector* vector2) {
+void elementwise_product(const struct Vector* vector1, const struct Vector* vector2, struct Vector* result) {
 	if (vector1->length != vector2->length) {
 		return NULL;
 	}
-	struct Vector* result = allocate_vector(vector1->length);
-	for (int i = 0; i < vector1->length; i++) {
-		result->elements[i] = vector1->elements[i] * vector2->elements[i];
+	if (result != vector1) {
+		if (result->length != vector1->length) {
+			free(result->elements);
+			result->elements = malloc(vector1->length * sizeof(double));
+			result->length = vector1->length;
+		}
+
+		for (int i = 0; i < vector1->length; i++) {
+			result->elements[i] = vector1->elements[i] * vector2->elements[i];
+		}
 	}
-	return result;
+	else {
+		for (int i = 0; i < vector1->length; i++) {
+			result->elements[i] *= vector2->elements[i];
+		}
+	}
 }
 
-struct Vector* sigmoid_vector(const struct Vector* vector) {
-	struct Vector* result = allocate_vector(vector->length);
+void sigmoid_vector(const struct Vector* vector, struct Vector* result) {
 	for (int i = 0; i < vector->length; i++) {
 		result->elements[i] = sigmoid(vector->elements[i]);
 	}
-	return result;
 }
 
-struct Vector* sigmoid_prime_vector(const struct Vector* vector) {
-	struct Vector* result = allocate_vector(vector->length);
+void sigmoid_prime_vector(const struct Vector* vector, struct Vector* result) {
 	for (int i = 0; i < vector->length; i++) {
 		result->elements[i] = sigmoid_prime(vector->elements[i]);
 	}
-	return result;
 }
