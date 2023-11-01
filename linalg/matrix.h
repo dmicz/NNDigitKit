@@ -8,12 +8,12 @@ struct Matrix {
 	double** elements;
 };
 
-struct Matrix* allocate_matrix(const int rows, const int columns);
-
-void zero_matrix(struct Matrix* matrix);
+struct Matrix create_matrix(const int rows, const int columns);
 
 void free_matrix(struct Matrix* matrix);
 
-struct Vector* matrix_vector_multiply(const struct Matrix* matrix, const struct Vector* vector);
+struct Vector matrix_vector_multiply(const struct Matrix matrix, const struct Vector vector);
+
+void zero_matrix(struct Matrix* matrix);
 
 #endif

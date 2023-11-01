@@ -6,23 +6,27 @@ struct Vector {
 	double* elements;
 };
 
-struct Vector* allocate_vector(const int length);
+typedef double (*binary_operation)(double, double);
+typedef double (*unary_operation)(double);
 
-void zero_vector(struct Vector* vector);
+struct Vector create_vector(int length);
 
-void free_vector(struct Vector* vector);
+struct Vector vector_binary_operation(const struct Vector vector1, const struct Vector vector2, 
+	binary_operation operator);
 
-void dot_product(const struct Vector* vector1, const struct Vector* vector2, struct Vector* result);
+struct Vector vector_unary_operation(const struct Vector vector, unary_operation operator);
 
-void add_vectors(const struct Vector* vector1, const struct Vector* vector2, struct Vector* result);
+void free_vector(struct Vector vector);
 
-void subtract_vectors(const struct Vector* vector1, const struct Vector* vector2, struct Vector* result);
+double dot_product(const struct Vector vector1, const struct Vector vector2);
 
-void elementwise_product(const struct Vector* vector1, const struct Vector* vector2, struct Vector* result);
+double add_vectors(double a, double b);
 
-void sigmoid_vector(const struct Vector* vector, struct Vector* result);
+double subtract_vectors(double a, double b);
 
-void sigmoid_prime_vector(const struct Vector* vector, struct Vector* result);
+double hadamard_product_vectors(double a, double b);
+
+double negate_vector(double a);
 
 
 #endif

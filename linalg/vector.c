@@ -1,122 +1,61 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include "vector.h"
 #include "../util/math_utils.h"
 
-struct Vector* allocate_vector(const int length) {
-	struct Vector* vector = malloc(sizeof(struct Vector));
-	vector->length = length;
-	vector->elements = malloc(length * sizeof(double));
+struct Vector create_vector(int length) {
+	struct Vector vector;
+	vector.length = length;
+	vector.elements = malloc(length * sizeof(double));
+	if (vector.elements == NULL) {
+		printf("Error allocating vector of length %d", length);
+		return (struct Vector) { 0, NULL };
+	}
 	return vector;
 }
 
-void zero_vector(struct Vector* vector) {
-	for (int i = 0; i < vector->length; i++) {
-		vector->elements[i] = 0.;
+struct Vector vector_binary_operation(const struct Vector vector1, const struct Vector vector2, binary_operation operator) {
+	if (vector1.length != vector2.length) {
+		printf("Error performing binary operation on vectors: vectors are different sizes\n");
+		return (struct Vector) { 0, NULL };
+	}
+	struct Vector result = create_vector(vector1.length);
+
+	for (int i = 0; i < result.length; i++) {
+		result.elements[i] = operator(vector1.elements[i], vector2.elements[i]);
+	}
+	return result;
+}
+
+struct Vector vector_unary_operation(const struct Vector vector, unary_operation operator) {
+	struct Vector result = create_vector(vector.length);
+	for (int i = 0; i < result.length; i++) {
+		result.elements[i] = operator(vector.elements[i]);
+	}
+	return result;
+}
+
+void free_vector(struct Vector vector) {
+	free(vector.elements);
+}
+
+double dot_product(const struct Vector vector1, const struct Vector vector2) {
+	if (vector1.length != vector2.length) {
+		printf("Error performing binary operation on vectors: vectors are different sizes\n");
+		return 0;
+	}
+	int sum = 0;
+	for (int i = 0; i < vector1.length; i++) {
+		sum += vector1.elements[i] * vector2.elements[i];
 	}
 }
 
-void free_vector(struct Vector* vector) {
-	free(vector->elements);
-	free(vector);
-}
+double add_vectors(double a, double b) { return a + b; }
 
-void dot_product(const struct Vector* vector1, const struct Vector* vector2, struct Vector* result) {
-	if (vector1->length != vector2->length) {
-		return NULL;
-	}
-	if (result != vector1) {
-		if (result->length != vector1->length) {
-			free(result->elements);
-			result->elements = malloc(vector1->length * sizeof(double));
-			result->length = vector1->length;
-		}
+double subtract_vectors(double a, double b) { return a - b; }
 
-		for (int i = 0; i < vector1->length; i++) {
-			result->elements[i] = vector1->elements[i] * vector2->elements[i];
-		}
-	}
-	else {
-		for (int i = 0; i < vector1->length; i++) {
-			result->elements[i] *= vector2->elements[i];
-		}
-	}
-}
+double hadamard_product_vectors(double a, double b) { return a * b; }
 
+double negate_vector(double a) { return -a; }
 
-void add_vectors(const struct Vector* vector1, const struct Vector* vector2, struct Vector* result) {
-	if (vector1->length != vector2->length) {
-		return NULL;
-	}
-	if (result != vector1) {
-		if (result->length != vector1->length) {
-			free(result->elements);
-			result->elements = malloc(vector1->length * sizeof(double));
-			result->length = vector1->length;
-		}
-
-		for (int i = 0; i < vector1->length; i++) {
-			result->elements[i] = vector1->elements[i] + vector2->elements[i];
-		}
-	}
-	else {
-		for (int i = 0; i < vector1->length; i++) {
-			result->elements[i] += vector2->elements[i];
-		}
-	}
-}
-
-void subtract_vectors(const struct Vector* vector1, const struct Vector* vector2, struct Vector* result) {
-	if (vector1->length != vector2->length) {
-		return NULL;
-	}
-	if (result != vector1) {
-		if (result->length != vector1->length) {
-			free(result->elements);
-			result->elements = malloc(vector1->length * sizeof(double));
-			result->length = vector1->length;
-		}
-
-		for (int i = 0; i < vector1->length; i++) {
-			result->elements[i] = vector1->elements[i] - vector2->elements[i];
-		}
-	}
-	else {
-		for (int i = 0; i < vector1->length; i++) {
-			result->elements[i] -= vector2->elements[i];
-		}
-	}
-}
-
-void elementwise_product(const struct Vector* vector1, const struct Vector* vector2, struct Vector* result) {
-	if (vector1->length != vector2->length) {
-		return NULL;
-	}
-	if (result != vector1) {
-		if (result->length != vector1->length) {
-			free(result->elements);
-			result->elements = malloc(vector1->length * sizeof(double));
-			result->length = vector1->length;
-		}
-
-		for (int i = 0; i < vector1->length; i++) {
-			result->elements[i] = vector1->elements[i] * vector2->elements[i];
-		}
-	}
-	else {
-		for (int i = 0; i < vector1->length; i++) {
-			result->elements[i] *= vector2->elements[i];
-		}
-	}
-}
-
-void sigmoid_vector(const struct Vector* vector, struct Vector* result) {
-	for (int i = 0; i < vector->length; i++) {
-		result->elements[i] = sigmoid(vector->elements[i]);
-	}
-}
-
-void sigmoid_prime_vector(const struct Vector* vector, struct Vector* result) {
-	for (int i = 0; i < vector->length; i++) {
-		result->elements[i] = sigmoid_prime(vector->elements[i]);
-	}
-}
+double zero_vector(double a) { return 0; }
