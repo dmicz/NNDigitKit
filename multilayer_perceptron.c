@@ -3,53 +3,35 @@
 #include "linalg/vector.h"
 #include <stdlib.h>
 
-typedef double vec4[4];
 
-void random_init_vector(struct Vector* vector) {
-	for (int i = 0; i < vector->length; i++) {
-		vector->elements[i] = generate_std_norm_dist();
-	}
-}
-
-void random_init_matrix(struct Matrix* matrix) {
-	for (int i = 0; i < matrix->rows; i++) {
-		for (int j = 0; j < matrix->columns; j++) {
-			matrix->elements[i][j] = generate_std_norm_dist();
-		}
-	}
-}
-
-struct Vector* create_label_vector(const int nodes, const int label_value) {
-	struct Vector* label_vector = allocate_vector(nodes);
-	zero_vector(label_vector);
-	label_vector->elements[label_value] = 1.0;
+struct Vector create_label_vector(const int nodes, const int label_value) {
+	struct Vector label_vector = create_vector(nodes);
+	apply_vector_unary_operation(label_vector, &zero_vector);
+	label_vector.elements[label_value] = 1.0;
 	return label_vector;
 }
 
-struct Vector* feed_forward(const int layer_count, const struct Matrix** weights,
-	const struct Vector** biases,
+struct Vector feed_forward(const int layer_count, const struct Matrix* weights,
+	const struct Vector* biases,
 	const struct Vector* input) {
-	struct Vector* activation = allocate_vector(input->length);
+	struct Vector activation = create_vector(input->length);
 
 	for (int i = 0; i < input->length; i++) {
-		activation->elements[i] = input->elements[i];
+		activation.elements[i] = input->elements[i];
 	}
 
 	for (int i = 0; i < layer_count - 1; i++) {
-		struct Vector* weighted = matrix_vector_multiply(weights[i], activation);
-		struct Vector* z = add_vectors(weighted, biases[i]);
-		free_vector(weighted);
-
-		struct Vector* sigmoided = sigmoid_vector(z);
-		free_vector(z);
+		struct Vector weighted = matrix_vector_multiply(weights[i], activation);
+		apply_vector_binary_operation(weighted, biases[i], &add_vectors);
+		apply_vector_unary_operation(weighted, &sigmoid);
 
 		free_vector(activation);
-		activation = sigmoided;
+		activation = weighted;
 	}
 
 	return activation;
 }
-
+#if 0
 void backprop(struct Matrix*** nabla_weights, struct Vector*** nabla_biases,
 	const struct Matrix** weights, const struct Vector** biases,
 	const struct Vector* input, const char y, const int layer_count) {
@@ -155,3 +137,4 @@ void sgd(const struct Matrix** weights, const struct Vector** biases,
 	}
 	free(labels);
 }
+#endif

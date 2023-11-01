@@ -1,6 +1,7 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+
 struct Vector {
 	int length;
 	double* elements;
@@ -16,6 +17,11 @@ struct Vector vector_binary_operation(const struct Vector vector1, const struct 
 
 struct Vector vector_unary_operation(const struct Vector vector, unary_operation operator);
 
+void apply_vector_binary_operation(struct Vector vector1, const struct Vector vector2,
+	binary_operation operator);
+
+void apply_vector_unary_operation(struct Vector vector, unary_operation operator);
+
 void free_vector(struct Vector vector);
 
 double dot_product(const struct Vector vector1, const struct Vector vector2);
@@ -28,5 +34,8 @@ double hadamard_product_vectors(double a, double b);
 
 double negate_vector(double a);
 
+double zero_vector(double a);
+
+double random_init_vector(double a);
 
 #endif

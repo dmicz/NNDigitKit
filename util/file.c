@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "../linalg/vector.h"
 
-int read_image_file(const FILE* file, struct Vector*** images) {
+int read_image_file(const FILE* file, struct Vector** images) {
 	unsigned char* magic_number_bytes = malloc(4 * sizeof(char));
 	unsigned char* image_count_bytes = malloc(4 * sizeof(char));
 	unsigned char* row_count_bytes = malloc(4 * sizeof(char));
@@ -24,11 +24,11 @@ int read_image_file(const FILE* file, struct Vector*** images) {
 	fread((void*)new_images_bytes, sizeof(char), pixel_count, file);
 
 	int vector_size = row_count * column_count;
-	struct Vector** new_images = malloc(image_count * sizeof(struct Vector*));
+	struct Vector* new_images = malloc(image_count * sizeof(struct Vector));
 	for (int i = 0; i < image_count; i++) {
-		new_images[i] = allocate_vector(vector_size);
+		new_images[i] = create_vector(vector_size);
 		for (int j = 0; j < vector_size; j++) {
-			new_images[i]->elements[j] = ((double)new_images_bytes[i * vector_size + j]) / 256.;
+			new_images[i].elements[j] = ((double)new_images_bytes[i * vector_size + j]) / 256.;
 		}
 	}
 

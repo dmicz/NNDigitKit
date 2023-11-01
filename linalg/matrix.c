@@ -1,6 +1,8 @@
 #include "matrix.h"
+
 #include <stdlib.h>
 #include <stdio.h>
+#include "../util/math_utils.h"
 
 struct Matrix create_matrix(const int rows, const int columns) {
 	struct Matrix matrix;
@@ -22,11 +24,11 @@ struct Matrix create_matrix(const int rows, const int columns) {
 	return matrix;
 }
 
-void free_matrix(struct Matrix* matrix) {
-	for (int i = 0; i < matrix->rows; i++) {
-		free(matrix->elements[i]);
+void free_matrix(struct Matrix matrix) {
+	for (int i = 0; i < matrix.rows; i++) {
+		free(matrix.elements[i]);
 	}
-	free(matrix->elements);
+	free(matrix.elements);
 }
 
 struct Vector matrix_vector_multiply(const struct Matrix matrix, const struct Vector vector) {
@@ -50,6 +52,14 @@ void zero_matrix(struct Matrix* matrix) {
 	for (int i = 0; i < matrix->rows; i++) {
 		for (int j = 0; j < matrix->columns; j++) {
 			matrix->elements[i][j] = 0.;
+		}
+	}
+}
+
+void random_init_matrix(struct Matrix* matrix) {
+	for (int i = 0; i < matrix->rows; i++) {
+		for (int j = 0; j < matrix->columns; j++) {
+			matrix->elements[i][j] = generate_std_norm_dist();
 		}
 	}
 }
