@@ -35,9 +35,10 @@ struct Vector feed_forward(const int layer_count, const struct Matrix* weights,
 
 void sgd(struct Matrix* weights, struct Vector* biases,
 	const struct Vector* training_images, const char* training_labels,
-	const int minibatch_size, const int training_data_size,
+	const struct Vector* test_images, const char* test_labels, const int test_size,
+	const int minibatch_size, const int epochs,
 	const int layer_count, const double learning_rate) {
-
+	int training_data_size = epochs * minibatch_size;
 	int* labels = malloc(training_data_size * sizeof(int));
 	for (int i = 0; i < training_data_size; i++) {
 		labels[i] = i;
@@ -53,7 +54,7 @@ void sgd(struct Matrix* weights, struct Vector* biases,
 
 
 	/* Iterate through different mini-batches */
-	for (int i = 0; i < training_data_size / minibatch_size; i++) {
+	for (int i = 0; i < epochs; i++) {
 		/* Allocate parameter change variables */
 		struct Matrix* nabla_weights = malloc((layer_count - 1) * sizeof(struct Matrix));
 		struct Matrix* delta_nabla_weights = malloc((layer_count - 1) * sizeof(struct Matrix));
@@ -118,122 +119,24 @@ void sgd(struct Matrix* weights, struct Vector* biases,
 			}
 			apply_vector_binary_operation(biases[j], nabla_biases[j], &subtract_vectors);
 			apply_matrix_binary_operation(weights[j], nabla_weights[j], &subtract_vectors);
-		}
-
-		for (int j = 0; j < layer_count - 1; j++) {
 			free_matrix(nabla_weights[j]);
 			free_vector(nabla_biases[j]);
 		}
 		free(nabla_weights);
 		free(nabla_biases);
-	}
-	free(labels);
-}
 
-#if 0
-void backprop(struct Matrix*** nabla_weights, struct Vector*** nabla_biases,
-	const struct Matrix** weights, const struct Vector** biases,
-	const struct Vector* input, const char y, const int layer_count) {
-
-	struct Vector* activation = allocate_vector(input->length);
-	struct Vector** activations = malloc(layer_count * sizeof(struct Vector*));
-	struct Vector** z_vectors = malloc(layer_count * sizeof(struct Vector*));
-
-	for (int i = 0; i < input->length; i++) {
-		activation->elements[i] = input->elements[i];
-	}
-
-	for (int i = 0; i < layer_count - 1; i++) {
-		activations[i] = activation;
-		struct Vector* weighted = matrix_vector_multiply(weights[i], activation);
-		struct Vector* z = add_vectors(weighted, biases[i]);
-		free_vector(weighted);
-
-		z_vectors[i] = z;
-		struct Vector* sigmoided = sigmoid_vector(z);
-
-
-		free_vector(activation);
-		activation = sigmoided;
-	}
-
-	struct Vector* y_vector = create_label_vector(biases[layer_count - 2]->length, y - '0');
-	struct Vector* cost = subtract_vectors(activations[layer_count - 1], y_vector);
-	free_vector(y_vector);
-	struct Vector* sp = sigmoid_prime_vector(z_vectors[layer_count - 1]);
-	struct Vector* delta = elementwise_product(cost, sp);
-	free_vector(sp);
-	free_vector(cost);
-
-	nabla_biases[layer_count - 2] = delta;
-	nabla_weights[layer_count - 2] = dot_product(delta, activations[layer_count - 1]);
-
-	for (int i = layer_count - 2; i > 0; i--) {
-		struct Vector* z = z_vectors[i];
-		struct Vector* sp = sigmoid_prime_vector(z);
-		free_vector(z);
-		struct Vector* temp = dot_product(weights[i - 1], delta);
-		struct Vector* delta = elementwise_product(temp, sp);
-
-		free_vector(sp);
-		free_vector(temp);
-		nabla_biases[i - 1] = delta;
-		nabla_weights[i - 1] = dot_product(delta, activations[i]);
-	}
-
-	for (int i = 0; i < layer_count - 1; i++) {
-		free_vector(activations[i]);
-		free_vector(z_vectors[i]);
-	}
-	free(activations);
-	free(z_vectors);
-}
-
-void minibatch_training(const struct Matrix** weights, const struct Vector** biases,
-	const struct Vector** training_images, const char* training_labels,
-	const int* labels_to_train, const int minibatch_size, const int layer_count) {
-
-	struct Matrix** nabla_weights = malloc((layer_count - 1) * sizeof(struct Matrix*));
-	struct Vector** nabla_biases = malloc((layer_count - 1) * sizeof(struct Vector*));
-
-	for (int i = 0; i < layer_count - 1; i++) {
-		nabla_weights[i] = allocate_matrix(weights[i]->rows, weights[i]->columns);
-		nabla_biases[i] = allocate_vector(biases[i]->length);
-		zero_matrix(nabla_weights);
-		zero_vector(nabla_biases);
-	}
-
-	for (int i = 0; i < minibatch_size; i++) {
-		backprop(&nabla_weights, &nabla_biases, weights, biases,
-			training_images[labels_to_train[i]], training_labels[labels_to_train[i]], layer_count);
-
-	}
-
-
-	for (int i = 0; i < layer_count - 1; i++) {
-		free_matrix(nabla_weights[i]);
-		free_vector(nabla_biases[i]);
-	}
-	free(nabla_weights);
-	free(nabla_biases);
-}
-
-void sgd(const struct Matrix** weights, const struct Vector** biases,
-	const struct Vector** training_images, const char* training_labels,
-	const int minibatch_size, const int training_data_size, const int layer_count) {
-
-	int* labels = malloc(training_data_size * sizeof(int));
-	for (int i = 0; i < training_data_size; i++) {
-		labels[i] = i;
-	}
-	/* TODO: shuffle */
-
-	for (int i = 0; i < training_data_size / minibatch_size; i++) {
-		for (int j = 0; j < minibatch_size; j++) {
-			minibatch_training(weights, biases, training_images,
-				training_labels, labels + i * minibatch_size, minibatch_size, layer_count);
-		}
-	}
-	free(labels);
+		int correct = 0;
+		struct Vector output;
+		for (int test = 0; test < test_size; test++) {
+			output = feed_forward(layer_count, weights, biases, &test_images[test]);
+			int ans = 0;
+			for (int j = 0; j < output.length; j++) {
+				if (output.elements[j] > output.elements[ans]) ans = j;
 			}
-#endif
+			if (ans == test_labels[test]) correct++;
+			free_vector(output);
+		}
+		printf("Correct: %d/%d\tAccuracy: %f\tEpoch:%d/%d\n", correct, test_size, (double)correct / test_size, i, epochs);
+	}
+	free(labels);
+}
