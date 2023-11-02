@@ -55,7 +55,7 @@ void sgd(struct Matrix* weights, struct Vector* biases,
 			nabla_weights[j] = create_matrix(weights[j].rows, weights[j].columns);
 			nabla_biases[j] = create_vector(biases[j].length);
 			zero_matrix(&nabla_weights[j]);
-			apply_vector_unary_operation(biases[j], &zero_vector);
+			apply_vector_unary_operation(nabla_biases[j], &zero_vector);
 		}
 		/* Backprop through each training sample */
 		for (int j = 0; j < minibatch_size; j++) {
@@ -90,11 +90,14 @@ void sgd(struct Matrix* weights, struct Vector* biases,
 
 			free_vector(y);
 			for (int j = 0; j < layer_count - 1; j++) {
+				free_vector(z_vectors[j]);
+				free_vector(activations[j]);
 				apply_vector_binary_operation(nabla_biases[j], delta_nabla_biases[j], &add_vectors);
 				apply_matrix_binary_operation(nabla_weights[j], delta_nabla_weights[j], &add_vectors);
 				free_vector(delta_nabla_biases[j]);
 				free_matrix(delta_nabla_weights[j]);
 			}
+			free_vector(activations[layer_count - 1]);
 		}
 
 		/* Change parameters according to minibatch */

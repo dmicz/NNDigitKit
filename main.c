@@ -46,7 +46,7 @@ int main() {
 	}
 	free_vector(output);
 
-	sgd(weights, biases, training_images, training_labels, 20, 100, layer_count, 0.1);
+	sgd(weights, biases, training_images, training_labels, 100, 10000, layer_count, 10.);
 	output = feed_forward(layer_count, weights, biases, &training_images[0]);
 	for (int i = 0; i < output.length; i++) {
 		printf("%d: %f\n", i, output.elements[i]);
