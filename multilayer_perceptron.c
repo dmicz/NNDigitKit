@@ -2,6 +2,7 @@
 #include "util/math_utils.h"
 #include "linalg/vector.h"
 #include <stdlib.h>
+#include <math.h>
 
 
 struct Vector create_label_vector(const int nodes, const int label_value) {
@@ -126,17 +127,22 @@ void sgd(struct Matrix* weights, struct Vector* biases,
 		free(nabla_biases);
 
 		int correct = 0;
+		double avg_cost = 0.;
 		struct Vector output;
 		for (int test = 0; test < test_size; test++) {
 			output = feed_forward(layer_count, weights, biases, &test_images[test]);
 			int ans = 0;
+			double cost = 0.;
 			for (int j = 0; j < output.length; j++) {
 				if (output.elements[j] > output.elements[ans]) ans = j;
+				cost += pow(output.elements[j] - (test_labels[test] == j ? 1 : 0),2);
 			}
 			if (ans == test_labels[test]) correct++;
+			avg_cost += cost;
 			free_vector(output);
 		}
-		printf("Correct: %d/%d\tAccuracy: %f\tEpoch:%d/%d\n", correct, test_size, (double)correct / test_size, i, epochs);
+		avg_cost /= test_size;
+		printf("Correct: %d/%d\tAccuracy: %f\tCost: %f\tEpoch:%d/%d\n", correct, test_size, (double)correct / test_size, avg_cost, i, epochs);
 	}
 	free(labels);
 }
