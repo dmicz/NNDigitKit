@@ -44,6 +44,14 @@ void sgd(struct Matrix* weights, struct Vector* biases,
 	}
 	/* TODO: shuffle */
 
+	for (int i = 0; i < training_data_size - 1; i++) {
+		int j = i + rand() / (RAND_MAX / (training_data_size - i) + 1);
+		int t = labels[j];
+		labels[j] = labels[i];
+		labels[i] = t;
+	}
+
+
 	/* Iterate through different mini-batches */
 	for (int i = 0; i < training_data_size / minibatch_size; i++) {
 		/* Allocate parameter change variables */
@@ -91,13 +99,11 @@ void sgd(struct Matrix* weights, struct Vector* biases,
 			free_vector(y);
 			for (int j = 0; j < layer_count - 1; j++) {
 				free_vector(z_vectors[j]);
-				free_vector(activations[j]);
 				apply_vector_binary_operation(nabla_biases[j], delta_nabla_biases[j], &add_vectors);
 				apply_matrix_binary_operation(nabla_weights[j], delta_nabla_weights[j], &add_vectors);
 				free_vector(delta_nabla_biases[j]);
 				free_matrix(delta_nabla_weights[j]);
 			}
-			free_vector(activations[layer_count - 1]);
 		}
 
 		/* Change parameters according to minibatch */
@@ -113,6 +119,13 @@ void sgd(struct Matrix* weights, struct Vector* biases,
 			apply_vector_binary_operation(biases[j], nabla_biases[j], &subtract_vectors);
 			apply_matrix_binary_operation(weights[j], nabla_weights[j], &subtract_vectors);
 		}
+
+		for (int j = 0; j < layer_count - 1; j++) {
+			free_matrix(nabla_weights[j]);
+			free_vector(nabla_biases[j]);
+		}
+		free(nabla_weights);
+		free(nabla_biases);
 	}
 	free(labels);
 }
@@ -222,5 +235,5 @@ void sgd(const struct Matrix** weights, const struct Vector** biases,
 		}
 	}
 	free(labels);
-}
+			}
 #endif
