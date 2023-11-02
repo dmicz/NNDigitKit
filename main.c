@@ -55,7 +55,7 @@ int main() {
 	fclose(test_images_file);
 	fclose(test_labels_file);
 
-	sgd(weights, biases, training_images, training_labels, test_images, test_labels, 5000, 5, 12000, layer_count, 3);
+	sgd(weights, biases, training_images, training_labels, test_images, test_labels, 10000, training_images_count, 5, 5, layer_count, 3);
 
 
 	for (int i = 0; i < layer_count - 1; i++) {
