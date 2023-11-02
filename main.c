@@ -11,7 +11,7 @@
 int main() {
 	srand(1698930493); /* set to constant for debugging purposes */
 
-	int layer_sizes[] = { 784, 20,20, 10 };
+	int layer_sizes[] = { 784,50, 10 };
 	int layer_count = sizeof(layer_sizes) / sizeof(int);
 
 	FILE* training_images_file = fopen("mnist/train-images.idx3-ubyte", "rb");
@@ -55,7 +55,7 @@ int main() {
 	fclose(test_images_file);
 	fclose(test_labels_file);
 
-	sgd(weights, biases, training_images, training_labels, test_images, test_labels, 5000, 20, 300, layer_count, 6);
+	sgd(weights, biases, training_images, training_labels, test_images, test_labels, 5000, 5, 12000, layer_count, 3);
 
 
 	for (int i = 0; i < layer_count - 1; i++) {

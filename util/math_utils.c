@@ -7,7 +7,7 @@ double generate_std_norm_dist() {
 	for (int i = 0; i < 12; i++) {
 		irwin_hall_var += (double)rand() / (double)RAND_MAX;
 	}
-	return irwin_hall_var - 6;
+	return min(1,max(-1,irwin_hall_var - 6));
 }
 
 double sigmoid(const double z) {
