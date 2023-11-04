@@ -2,6 +2,7 @@
 #include "util/math_utils.h"
 #include "linalg/vector.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <math.h>
 
 
@@ -44,9 +45,6 @@ void sgd(struct Matrix* weights, struct Vector* biases,
 	for (int i = 0; i < training_data_size; i++) {
 		labels[i] = i;
 	}
-	/* TODO: shuffle */
-
-
 
 	/* Iterate through different mini-batches */
 	for (int epoch = 0; epoch < epochs; epoch++) {
