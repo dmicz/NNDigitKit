@@ -68,14 +68,14 @@ double dot_product(const struct Vector vector1, const struct Vector vector2) {
 	}
 }
 
-double add_vectors(double a, double b) { return a + b; }
+double func_add_doubles(double a, double b) { return a + b; }
 
-double subtract_vectors(double a, double b) { return a - b; }
+double func_subtract_doubles(double a, double b) { return a - b; }
 
-double hadamard_product_vectors(double a, double b) { return a * b; }
+double func_hadamard_product(double a, double b) { return a * b; }
 
-double negate_vector(double a) { return -a; }
+double func_negate_double(double a) { return -a; }
 
-double zero_vector(double a) { return 0; }
+double func_zero_double(double a) { return 0; }
 
-double random_init_vector(double a) { return generate_std_norm_dist(); }
+double func_std_norm_dist(double a) { return generate_std_norm_dist(); }

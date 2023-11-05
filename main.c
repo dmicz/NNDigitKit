@@ -36,7 +36,7 @@ int main() {
 	for (int i = 0; i < layer_count - 1; i++) {
 		weights[i] = create_matrix(layer_sizes[i + 1], layer_sizes[i]);
 		biases[i] = create_vector(layer_sizes[i + 1]);
-		apply_vector_unary_operation(biases[i], &random_init_vector);
+		apply_vector_unary_operation(biases[i], &func_std_norm_dist);
 		random_init_matrix(&weights[i]);
 	}
 

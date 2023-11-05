@@ -26,16 +26,16 @@ void free_vector(struct Vector vector);
 
 double dot_product(const struct Vector vector1, const struct Vector vector2);
 
-double add_vectors(double a, double b);
+double func_add_doubles(double a, double b);
 
-double subtract_vectors(double a, double b);
+double func_subtract_doubles(double a, double b);
 
-double hadamard_product_vectors(double a, double b);
+double func_hadamard_product(double a, double b);
 
-double negate_vector(double a);
+double func_negate_double(double a);
 
-double zero_vector(double a);
+double func_zero_double(double a);
 
-double random_init_vector(double a);
+double func_std_norm_dist(double a);
 
 #endif
