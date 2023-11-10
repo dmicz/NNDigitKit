@@ -34,10 +34,10 @@ int main() {
 	struct Vector* biases = malloc((layer_count - 1) * sizeof(struct Vector));
 
 	for (int i = 0; i < layer_count - 1; i++) {
-		weights[i] = create_matrix(layer_sizes[i + 1], layer_sizes[i]);
-		biases[i] = create_vector(layer_sizes[i + 1]);
-		apply_vector_unary_operation(biases[i], &func_std_norm_dist);
-		random_init_matrix(&weights[i]);
+		weights[i] = matrix_create(layer_sizes[i + 1], layer_sizes[i]);
+		biases[i] = vector_create(layer_sizes[i + 1]);
+		vector_apply_unary_operation(biases[i], &func_std_norm_dist);
+		matrix_random_init(&weights[i]);
 	}
 
 	FILE* test_images_file = fopen("mnist/t10k-images.idx3-ubyte", "rb");
@@ -60,18 +60,18 @@ int main() {
 
 	for (int i = 0; i < layer_count - 1; i++) {
 		free_matrix(weights[i]);
-		free_vector(biases[i]);
+		vector_free(biases[i]);
 	}
 	free(weights);
 	free(biases);
 
 	for (int i = 0; i < training_images_count; i++) {
-		free_vector(training_images[i]);
+		vector_free(training_images[i]);
 	}
 	free(training_images);
 	free(training_labels);
 	for (int i = 0; i < test_images_count; i++) {
-		free_vector(test_images[i]);
+		vector_free(test_images[i]);
 	}
 	free(test_images);
 	free(test_labels);

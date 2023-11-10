@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "../util/math_utils.h"
 
-struct Vector create_vector(int length) {
+struct Vector vector_create(int length) {
 	struct Vector vector;
 	vector.length = length;
 	vector.elements = malloc(length * sizeof(double));
@@ -20,7 +20,7 @@ struct Vector vector_binary_operation(const struct Vector vector1, const struct 
 		printf("Error performing binary operation on vectors: vectors are different sizes\n");
 		return (struct Vector) { 0, NULL };
 	}
-	struct Vector result = create_vector(vector1.length);
+	struct Vector result = vector_create(vector1.length);
 
 	for (int i = 0; i < result.length; i++) {
 		result.elements[i] = operator(vector1.elements[i], vector2.elements[i]);
@@ -29,14 +29,14 @@ struct Vector vector_binary_operation(const struct Vector vector1, const struct 
 }
 
 struct Vector vector_unary_operation(const struct Vector vector, unary_operation operator) {
-	struct Vector result = create_vector(vector.length);
+	struct Vector result = vector_create(vector.length);
 	for (int i = 0; i < result.length; i++) {
 		result.elements[i] = operator(vector.elements[i]);
 	}
 	return result;
 }
 
-void apply_vector_binary_operation(struct Vector vector1, const struct Vector vector2, binary_operation operator) {
+void vector_apply_binary_operation(struct Vector vector1, const struct Vector vector2, binary_operation operator) {
 	if (vector1.length != vector2.length) {
 		printf("Error performing binary operation on vectors: vectors are different sizes\n");
 		return;
@@ -47,13 +47,13 @@ void apply_vector_binary_operation(struct Vector vector1, const struct Vector ve
 	}
 }
 
-void apply_vector_unary_operation(struct Vector vector, unary_operation operator) {
+void vector_apply_unary_operation(struct Vector vector, unary_operation operator) {
 	for (int i = 0; i < vector.length; i++) {
 		vector.elements[i] = operator(vector.elements[i]);
 	}
 }
 
-void free_vector(struct Vector vector) {
+void vector_free(struct Vector vector) {
 	free(vector.elements);
 }
 

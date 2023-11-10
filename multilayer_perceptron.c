@@ -7,8 +7,8 @@
 
 
 struct Vector create_label_vector(const int nodes, const int label_value) {
-	struct Vector label_vector = create_vector(nodes);
-	apply_vector_unary_operation(label_vector, &func_zero_double);
+	struct Vector label_vector = vector_create(nodes);
+	vector_apply_unary_operation(label_vector, &func_zero_double);
 	label_vector.elements[label_value] = 1.0;
 	return label_vector;
 }
@@ -16,7 +16,7 @@ struct Vector create_label_vector(const int nodes, const int label_value) {
 struct Vector feed_forward(const int layer_count, const struct Matrix* weights,
 	const struct Vector* biases,
 	const struct Vector* input) {
-	struct Vector activation = create_vector(input->length);
+	struct Vector activation = vector_create(input->length);
 
 	for (int i = 0; i < input->length; i++) {
 		activation.elements[i] = input->elements[i];
@@ -24,10 +24,10 @@ struct Vector feed_forward(const int layer_count, const struct Matrix* weights,
 
 	for (int i = 0; i < layer_count - 1; i++) {
 		struct Vector weighted = matrix_vector_multiply(weights[i], activation);
-		apply_vector_binary_operation(weighted, biases[i], &func_add_doubles);
-		apply_vector_unary_operation(weighted, &sigmoid);
+		vector_apply_binary_operation(weighted, biases[i], &func_add_doubles);
+		vector_apply_unary_operation(weighted, &sigmoid);
 
-		free_vector(activation);
+		vector_free(activation);
 		activation = weighted;
 	}
 
@@ -61,10 +61,10 @@ void sgd(struct Matrix* weights, struct Vector* biases,
 			struct Vector* nabla_biases = malloc((layer_count - 1) * sizeof(struct Vector));
 			struct Vector* delta_nabla_biases = malloc((layer_count - 1) * sizeof(struct Vector));
 			for (int j = 0; j < layer_count - 1; j++) {
-				nabla_weights[j] = create_matrix(weights[j].rows, weights[j].columns);
-				nabla_biases[j] = create_vector(biases[j].length);
-				zero_matrix(&nabla_weights[j]);
-				apply_vector_unary_operation(nabla_biases[j], &func_zero_double);
+				nabla_weights[j] = matrix_create(weights[j].rows, weights[j].columns);
+				nabla_biases[j] = vector_create(biases[j].length);
+				matrix_zero(&nabla_weights[j]);
+				vector_apply_unary_operation(nabla_biases[j], &func_zero_double);
 			}
 			/* Backprop through each training sample */
 			for (int j = 0; j < minibatch_size; j++) {
@@ -74,37 +74,37 @@ void sgd(struct Matrix* weights, struct Vector* biases,
 				struct Vector* z_vectors = malloc((layer_count - 1) * sizeof(struct Vector));
 				for (int k = 0; k < layer_count - 1; k++) {
 					z_vectors[k] = matrix_vector_multiply(weights[k], activations[k]);
-					apply_vector_binary_operation(z_vectors[k], biases[k], &func_add_doubles);
+					vector_apply_binary_operation(z_vectors[k], biases[k], &func_add_doubles);
 
 					activations[k + 1] = vector_unary_operation(z_vectors[k], &sigmoid);
 				}
 				struct Vector y = create_label_vector(activations[layer_count - 1].length,
 					training_labels[labels[i * minibatch_size + j]]);
 				struct Vector delta = vector_binary_operation(activations[layer_count - 1], y, &func_subtract_doubles);
-				apply_vector_unary_operation(z_vectors[layer_count - 2], &sigmoid_prime);
-				apply_vector_binary_operation(delta, z_vectors[layer_count - 2], &func_hadamard_product);
+				vector_apply_unary_operation(z_vectors[layer_count - 2], &sigmoid_prime);
+				vector_apply_binary_operation(delta, z_vectors[layer_count - 2], &func_hadamard_product);
 				delta_nabla_biases[layer_count - 2] = delta;
-				delta_nabla_weights[layer_count - 2] = outer_product(delta, activations[layer_count - 2]);
+				delta_nabla_weights[layer_count - 2] = matrix_outer_product(delta, activations[layer_count - 2]);
 
 				for (int k = layer_count - 2; k > 0; k--) {
 					struct Vector sp = vector_unary_operation(z_vectors[k - 1], &sigmoid_prime);
-					struct Matrix tw = transpose(weights[k]);
+					struct Matrix tw = matrix_transpose(weights[k]);
 					delta_nabla_biases[k - 1] = matrix_vector_multiply(tw, delta);
-					apply_vector_binary_operation(delta_nabla_biases[k - 1], sp, &func_hadamard_product);
+					vector_apply_binary_operation(delta_nabla_biases[k - 1], sp, &func_hadamard_product);
 					delta = delta_nabla_biases[k - 1];
-					delta_nabla_weights[k - 1] = outer_product(delta, activations[k - 1]);
-					free_vector(sp);
+					delta_nabla_weights[k - 1] = matrix_outer_product(delta, activations[k - 1]);
+					vector_free(sp);
 					free_matrix(tw);
 				}
 
-				free_vector(y);
+				vector_free(y);
 				for (int j = 0; j < layer_count - 1; j++) {
-					free_vector(z_vectors[j]);
-					apply_vector_binary_operation(nabla_biases[j], delta_nabla_biases[j], &func_add_doubles);
-					apply_matrix_binary_operation(nabla_weights[j], delta_nabla_weights[j], &func_add_doubles);
-					free_vector(delta_nabla_biases[j]);
+					vector_free(z_vectors[j]);
+					vector_apply_binary_operation(nabla_biases[j], delta_nabla_biases[j], &func_add_doubles);
+					matrix_apply_binary_operation(nabla_weights[j], delta_nabla_weights[j], &func_add_doubles);
+					vector_free(delta_nabla_biases[j]);
 					free_matrix(delta_nabla_weights[j]);
-					free_vector(activations[j + 1]);
+					vector_free(activations[j + 1]);
 				}
 				free(activations);
 				free(z_vectors);
@@ -120,10 +120,10 @@ void sgd(struct Matrix* weights, struct Vector* biases,
 						nabla_weights[j].elements[k][l] *= (learning_rate / (double)minibatch_size);
 					}
 				}
-				apply_vector_binary_operation(biases[j], nabla_biases[j], &func_subtract_doubles);
-				apply_matrix_binary_operation(weights[j], nabla_weights[j], &func_subtract_doubles);
+				vector_apply_binary_operation(biases[j], nabla_biases[j], &func_subtract_doubles);
+				matrix_apply_binary_operation(weights[j], nabla_weights[j], &func_subtract_doubles);
 				free_matrix(nabla_weights[j]);
-				free_vector(nabla_biases[j]);
+				vector_free(nabla_biases[j]);
 			}
 			free(nabla_weights);
 			free(nabla_biases);
@@ -144,7 +144,7 @@ void sgd(struct Matrix* weights, struct Vector* biases,
 			}
 			if (ans == test_labels[test]) correct++;
 			avg_cost += cost;
-			free_vector(output);
+			vector_free(output);
 		}
 		avg_cost /= test_size;
 		printf("Correct: %d/%d\tAccuracy: %f\tCost: %f\tEpoch:%d/%d\n", correct, test_size, (double)correct / test_size, avg_cost, epoch + 1, epochs);
