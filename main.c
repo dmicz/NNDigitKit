@@ -1,6 +1,10 @@
-#include <stdio.h>	/* printf()	*/
-#include <math.h>	/* exp()	*/
-#include <stdlib.h>	/* rand()	*/
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+
+#define GLFW_INCLUDE_NONE
+#include <glad/gl.h>
+#include <GLFW/glfw3.h>
 
 #include "util/math_utils.h"
 #include "util/file.h"
@@ -8,8 +12,25 @@
 #include "linalg/matrix.h"
 #include "multilayer_perceptron.h"
 
+void error_callback(int error, const char* description)
+{
+	fprintf(stderr, "Error: %s\n", description);
+}
+
+
 int main() {
-	srand(1698931523); /* set to constant for debugging purposes */
+	if (!glfwInit()) {
+		return 1;
+	}
+
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	GLFWwindow* window = glfwCreateWindow(640, 480, "NNDigitKit", NULL, NULL);
+	if (!window)
+	{
+		return 1;
+	}
+	srand(1698931523);
 
 	int layer_sizes[] = { 784, 100, 10 };
 	int layer_count = sizeof(layer_sizes) / sizeof(int);
@@ -75,5 +96,8 @@ int main() {
 	}
 	free(test_images);
 	free(test_labels);
+
+	glfwDestroyWindow(window);
+	glfwTerminate();
 	return 0;
 }
