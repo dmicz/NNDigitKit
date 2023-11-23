@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="gl.c" />
     <ClCompile Include="linalg\matrix.c" />
     <ClCompile Include="linalg\vector.c" />
     <ClCompile Include="main.c" />

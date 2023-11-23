@@ -17,8 +17,15 @@ void error_callback(int error, const char* description)
 	fprintf(stderr, "Error: %s\n", description);
 }
 
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
+	}
+}
+
 
 int main() {
+	glfwSetErrorCallback(error_callback);
 	if (!glfwInit()) {
 		return 1;
 	}
@@ -30,6 +37,23 @@ int main() {
 	{
 		return 1;
 	}
+	glfwSetKeyCallback(window, key_callback);
+
+	glfwMakeContextCurrent(window);
+	gladLoadGL(glfwGetProcAddress);
+	glfwSwapInterval(1);
+
+	int width, height;
+	glfwGetFramebufferSize(window, &width, &height);
+	glViewport(0, 0, width, height);
+	
+	double time = glfwGetTime();
+	while (!glfwWindowShouldClose(window)) {
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
+	glfwDestroyWindow(window);
+
 	srand(1698931523);
 
 	int layer_sizes[] = { 784, 100, 10 };
@@ -97,7 +121,6 @@ int main() {
 	free(test_images);
 	free(test_labels);
 
-	glfwDestroyWindow(window);
 	glfwTerminate();
 	return 0;
 }

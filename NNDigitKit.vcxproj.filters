@@ -33,6 +33,9 @@
     <ClCompile Include="util\file.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="gl.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="util\math_utils.h">
