@@ -6,6 +6,9 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
+#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
+#include <cimgui/cimgui.h>
+
 #include "util/math_utils.h"
 #include "util/file.h"
 #include "linalg/vector.h"
@@ -24,14 +27,14 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 }
 
 
-int main() {
+int main(int argc, char* argv[]) {
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit()) {
 		return 1;
 	}
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	GLFWwindow* window = glfwCreateWindow(640, 480, "NNDigitKit", NULL, NULL);
 	if (!window)
 	{
@@ -43,12 +46,20 @@ int main() {
 	gladLoadGL(glfwGetProcAddress);
 	glfwSwapInterval(1);
 
+	struct ImGuiContext* ctx = igCreateContext(NULL);
+	struct ImGuiIO* io = igGetIO();
+	//ImGui_ImplGlfw_InitForOpenGL(window, true);
+
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
 	
 	double time = glfwGetTime();
 	while (!glfwWindowShouldClose(window)) {
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

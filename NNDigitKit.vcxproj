@@ -71,8 +71,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\denni\source\repos\NNDigitKit\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\denni\source\repos\NNDigitKit\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\lib;$(LibraryPath)</LibraryPath>
+    <SourcePath>
+    </SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\Users\denni\source\repos\NNDigitKit\include;$(IncludePath)</IncludePath>
@@ -139,6 +141,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="gl.c" />
+    <ClCompile Include="include\cimgui\cimgui.cpp" />
+    <ClCompile Include="include\cimgui\imgui\imgui.cpp" />
+    <ClCompile Include="include\cimgui\imgui\imgui_demo.cpp" />
+    <ClCompile Include="include\cimgui\imgui\imgui_draw.cpp" />
+    <ClCompile Include="include\cimgui\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="include\cimgui\imgui\imgui_tables.cpp" />
+    <ClCompile Include="include\cimgui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="linalg\matrix.c" />
     <ClCompile Include="linalg\vector.c" />
     <ClCompile Include="main.c" />
@@ -147,6 +156,15 @@
     <ClCompile Include="multilayer_perceptron.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\cimgui\cimgui.h" />
+    <ClInclude Include="include\cimgui\cimgui_impl.h" />
+    <ClInclude Include="include\cimgui\imgui\imconfig.h" />
+    <ClInclude Include="include\cimgui\imgui\imgui.h" />
+    <ClInclude Include="include\cimgui\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="include\cimgui\imgui\imgui_internal.h" />
+    <ClInclude Include="include\cimgui\imgui\imstb_rectpack.h" />
+    <ClInclude Include="include\cimgui\imgui\imstb_textedit.h" />
+    <ClInclude Include="include\cimgui\imgui\imstb_truetype.h" />
     <ClInclude Include="linalg\matrix.h" />
     <ClInclude Include="linalg\vector.h" />
     <ClInclude Include="linalg\vector3.h" />
