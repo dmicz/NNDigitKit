@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 
+
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 #define CIMGUI_USE_GLFW
 #define CIMGUI_USE_OPENGL3
@@ -62,8 +63,11 @@ int main(int argc, char* argv[]) {
 	int seed = 1698931523;
 
 	const int MAX_LAYER_COUNT = 6;
-	int* layer_sizes = malloc(MAX_LAYER_COUNT * sizeof(int));
-	layer_sizes = (int[6]){ 784, 100, 10, 0, 0, 0 };
+	const int MAX_LAYER_SIZE = 1000;
+	int* layer_sizes = calloc(MAX_LAYER_COUNT, sizeof(int));
+	layer_sizes[0] = 784;
+	layer_sizes[1] = 100;
+	layer_sizes[2] = 10;
 	int layer_count = 3;
 
 
@@ -85,7 +89,10 @@ int main(int argc, char* argv[]) {
 		for (int i = 0; i < layer_count; i++) {
 			char label[8];
 			snprintf(label, sizeof(label), "Layer %d", i + 1);
-			igInputInt(label, &layer_sizes[i], NULL, NULL, ((i == 0 || i == layer_count - 1) ? ImGuiInputTextFlags_ReadOnly : ImGuiInputTextFlags_None));
+			if (igInputInt(label, &layer_sizes[i], NULL, NULL, ((i == 0 || i == layer_count - 1) ? ImGuiInputTextFlags_ReadOnly : ImGuiInputTextFlags_None))) {
+				if (layer_sizes[i] < 1) layer_sizes[i] = 1;
+				else if (layer_sizes[i] > MAX_LAYER_SIZE) layer_sizes[i] = MAX_LAYER_SIZE;
+			}
 		}
 
 		igPushStyleColor_U32(ImGuiCol_Button, 0xCC0000FF);
