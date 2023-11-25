@@ -4,7 +4,14 @@
 #include <stdio.h>
 #include "../linalg/vector.h"
 
-int read_image_file(const FILE* file, struct Vector** images);
-int read_label_file(const FILE* file, char** labels);
+struct LabeledData {
+	struct Vector* images;
+	char* labels;
+	int size;
+};
+
+struct LabeledData read_labeled_image_files(const char* image_file_name, const char* label_file_name);
+
+void free_labeled_data(struct LabeledData data);
 
 #endif
