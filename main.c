@@ -17,7 +17,7 @@
 #include "util/file.h"
 #include "linalg/vector.h"
 #include "linalg/matrix.h"
-#include "multilayer_perceptron.h"
+#include "multilayer_perceptron.h"	
 
 void error_callback(int error, const char* description)
 {
@@ -66,6 +66,8 @@ int main(int argc, char* argv[]) {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		igNewFrame();
+		igBegin("NNDigitKit Config", NULL, ImGuiWindowFlags_MenuBar);
+		igEnd();
 
 		igBegin("Test", NULL, 0);
 		igText("Test");
