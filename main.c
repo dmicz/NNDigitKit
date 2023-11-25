@@ -2,12 +2,16 @@
 #include <math.h>
 #include <stdlib.h>
 
+#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
+#define CIMGUI_USE_GLFW
+#define CIMGUI_USE_OPENGL3
+#include <cimgui/cimgui.h>
+#include <cimgui/cimgui_impl.h>
+
 #define GLFW_INCLUDE_NONE
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
-#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
-#include <cimgui/cimgui.h>
 
 #include "util/math_utils.h"
 #include "util/file.h"
@@ -33,8 +37,8 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	GLFWwindow* window = glfwCreateWindow(640, 480, "NNDigitKit", NULL, NULL);
 	if (!window)
 	{
@@ -48,20 +52,39 @@ int main(int argc, char* argv[]) {
 
 	struct ImGuiContext* ctx = igCreateContext(NULL);
 	struct ImGuiIO* io = igGetIO();
-	//ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init("#version 330 core");
+
+	igStyleColorsDark(NULL);
 
 	int width, height;
-	glfwGetFramebufferSize(window, &width, &height);
-	glViewport(0, 0, width, height);
 	
 	double time = glfwGetTime();
 	while (!glfwWindowShouldClose(window)) {
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glfwPollEvents();
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		igNewFrame();
+
+		igBegin("Test", NULL, 0);
+		igText("Test");
+		igButton("Test", (struct ImVec2) { 0, 0 });
+		igEnd();
+
+		// igShowDemoWindow(NULL);
+
+		glfwGetFramebufferSize(window, &width, &height);
+		glViewport(0, 0, width, height);
 		glClear(GL_COLOR_BUFFER_BIT);
+		glClearColor(0.0, 0.0, 0.0, 0.0);
+
+		igRender();
+		ImGui_ImplOpenGL3_RenderDrawData(igGetDrawData());
+
 
 
 		glfwSwapBuffers(window);
-		glfwPollEvents();
 	}
 	glfwDestroyWindow(window);
 
@@ -132,6 +155,8 @@ int main(int argc, char* argv[]) {
 	free(test_images);
 	free(test_labels);
 
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
 	glfwTerminate();
 	return 0;
 }

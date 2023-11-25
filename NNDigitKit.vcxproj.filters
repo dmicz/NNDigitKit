@@ -57,6 +57,9 @@
     <ClCompile Include="include\cimgui\imgui\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include\cimgui\imgui\imgui_impl_opengl3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="util\math_utils.h">
@@ -80,9 +83,6 @@
     <ClInclude Include="include\cimgui\cimgui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\cimgui\cimgui_impl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\cimgui\imgui\imconfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -102,6 +102,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\cimgui\imgui\imstb_truetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cimgui\cimgui_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cimgui\imgui\imgui_impl_opengl3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cimgui\imgui\imgui_impl_opengl3_loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

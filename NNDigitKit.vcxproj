@@ -112,7 +112,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;IMGUI_IMPL_API=extern "C" __declspec(dllexport);IMGUI_IMPL_OPENGL_LOADER_GL3W;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
@@ -146,6 +146,7 @@
     <ClCompile Include="include\cimgui\imgui\imgui_demo.cpp" />
     <ClCompile Include="include\cimgui\imgui\imgui_draw.cpp" />
     <ClCompile Include="include\cimgui\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="include\cimgui\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="include\cimgui\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\cimgui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="linalg\matrix.c" />
@@ -161,6 +162,8 @@
     <ClInclude Include="include\cimgui\imgui\imconfig.h" />
     <ClInclude Include="include\cimgui\imgui\imgui.h" />
     <ClInclude Include="include\cimgui\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="include\cimgui\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="include\cimgui\imgui\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="include\cimgui\imgui\imgui_internal.h" />
     <ClInclude Include="include\cimgui\imgui\imstb_rectpack.h" />
     <ClInclude Include="include\cimgui\imgui\imstb_textedit.h" />
