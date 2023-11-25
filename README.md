@@ -48,9 +48,9 @@ To get started, follow these steps:
 - Build the project using either debug configuration for debugging or release for an optimized executable.
 
 ## Usage
-The default multilayer perceptron model is configurable through the GUI, which currently has options for layer count and size.
+The default multilayer perceptron model is configurable through the GUI, which currently has options for layer count and size, training batch sizes, number of epochs, and learning rate.
 
-![image](https://github.com/dmicz/NNDigitKit/assets/107702866/60eb31e2-40c3-4d87-b457-ed2c973e9431)
+![image](https://github.com/dmicz/NNDigitKit/assets/107702866/b3ed8361-ac19-430b-a7c1-2596ad725ece)
 
 ## Contributing
 
@@ -59,3 +59,11 @@ Contributions to enhance and extend NNDigitKit are welcome! Feel free to submit 
 ## License
 
 This project is licensed under the [MIT license](https://opensource.org/license/mit/).
+
+## Acknowledgments
+
+### Libraries Used
+- [GLFW](https://github.com/glfw/glfw) is used for window and context management.
+- [Glad](https://github.com/Dav1dde/glad) is used for OpenGL loading.
+- [cimgui](https://github.com/cimgui/cimgui) is used for integrating Dear ImGui with C.
+- [Dear ImGui](https://github.com/ocornut/imgui) is used to create the GUI.
