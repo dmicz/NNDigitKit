@@ -7,6 +7,8 @@ double sigmoid(const double z);
 
 double sigmoid_prime(const double z);
 
+double tanh_prime(const double z);
+
 int byte_array_to_big_endian(unsigned char* bytes);
 
 #endif
