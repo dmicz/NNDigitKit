@@ -87,9 +87,21 @@ struct Matrix matrix_unary_operation(const struct Matrix matrix, unary_operation
 struct Matrix matrix_outer_product(const struct Vector vector1, const struct Vector vector2) {
 	struct Matrix result = matrix_create(vector1.length, vector2.length);
 	for (int i = 0; i < vector1.length; i++) {
+		int j = 0;
+		for (; j < vector2.length - 3; j += 4) {
+			result.elements[i][j] = vector1.elements[i] * vector2.elements[j];
+			result.elements[i][j + 1] = vector1.elements[i] * vector2.elements[j + 1];
+			result.elements[i][j + 2] = vector1.elements[i] * vector2.elements[j + 2];
+			result.elements[i][j + 3] = vector1.elements[i] * vector2.elements[j + 3];
+			}
+		for (; j < vector2.length; j++) {
+			result.elements[i][j] = vector1.elements[i] * vector2.elements[j];
+		}
+		/*
 		for (int j = 0; j < vector2.length; j++) {
 			result.elements[i][j] = vector1.elements[i] * vector2.elements[j];
 		}
+		*/
 	}
 	return result;
 }
@@ -111,9 +123,19 @@ void matrix_apply_binary_operation(struct Matrix matrix1, const struct Matrix ma
 		return;
 	}
 	for (int i = 0; i < matrix1.rows; i++) {
-		for (int j = 0; j < matrix1.columns; j++) {
+		int j = 0;
+		for (; j < matrix1.columns - 3; j += 4) {
+			matrix1.elements[i][j] = operator(matrix1.elements[i][j], matrix2.elements[i][j]);
+			matrix1.elements[i][j + 1] = operator(matrix1.elements[i][j + 1], matrix2.elements[i][j + 1]);
+			matrix1.elements[i][j + 2] = operator(matrix1.elements[i][j + 2], matrix2.elements[i][j + 2]);
+			matrix1.elements[i][j + 3] = operator(matrix1.elements[i][j + 3], matrix2.elements[i][j + 3]);
+		}
+		for (; j < matrix1.columns; j++) {
 			matrix1.elements[i][j] = operator(matrix1.elements[i][j], matrix2.elements[i][j]);
 		}
+		/*for (int j = 0; j < matrix1.columns; j++) {
+			matrix1.elements[i][j] = operator(matrix1.elements[i][j], matrix2.elements[i][j]);
+		}*/
 	}
 }
 
