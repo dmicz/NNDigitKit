@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-
+#include <time.h>
 
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 #define CIMGUI_USE_GLFW
@@ -12,7 +12,6 @@
 #define GLFW_INCLUDE_NONE
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
-
 
 #include "util/math_utils.h"
 #include "util/file.h"
@@ -40,7 +39,7 @@ int main(int argc, char* argv[]) {
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	GLFWwindow* window = glfwCreateWindow(640, 480, "NNDigitKit", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(480, 480, "NNDigitKit", NULL, NULL);
 	if (!window)
 	{
 		return 1;
@@ -70,6 +69,7 @@ int main(int argc, char* argv[]) {
 	layer_sizes[2] = 10;
 	int layer_count = 3;
 
+	int minibatch_size = 10, epochs = 30, learning_rate = 3;
 
 	double time = glfwGetTime();
 	while (!glfwWindowShouldClose(window)) {
@@ -79,9 +79,18 @@ int main(int argc, char* argv[]) {
 		ImGui_ImplGlfw_NewFrame();
 		igNewFrame();
 
-		igBegin("NNDigitKit Config", NULL, 0);
+		const ImGuiViewport* viewport = igGetMainViewport();
+		igSetNextWindowPos(viewport->WorkPos, 0, (struct ImVec2) { 0, 0 });
+		igSetNextWindowSize(viewport->WorkSize, 0);
 
+		igBegin("NNDigitKit Config", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
+		igTextColored((struct ImVec4) { 0, 0, 255, 255 }, "NNDigitKit Config");
+		
+		igText("Random seeding");
 		igInputInt("Seed", &seed, NULL, NULL, NULL);
+		igSeparator();
+
+		igText("Layer Settings");
 
 		if (igSliderInt("Layer count", &layer_count, 2, 6, NULL, ImGuiSliderFlags_None)) {
 			layer_sizes[layer_count - 1] = 10;
@@ -94,6 +103,23 @@ int main(int argc, char* argv[]) {
 				else if (layer_sizes[i] > MAX_LAYER_SIZE) layer_sizes[i] = MAX_LAYER_SIZE;
 			}
 		}
+
+		igSeparator();
+
+		igText("Hyperparameters");
+		if (igInputInt("Mini-batch Size", &minibatch_size, NULL, NULL, ImGuiInputTextFlags_None)) {
+			if (minibatch_size < 1) minibatch_size = 1;
+			else if (minibatch_size > 60000) minibatch_size = 60000;
+		}
+		if (igInputInt("Epochs", &epochs, NULL, NULL, ImGuiInputTextFlags_None)) {
+			if (epochs < 1) epochs = 1;
+			else if (epochs > 100) epochs = 100;
+		}
+		if (igInputInt("Learning Rate", &learning_rate, NULL, NULL, ImGuiInputTextFlags_None)) {
+			if (learning_rate < 0) learning_rate = 0;
+			else if (learning_rate > 100) learning_rate = 100;
+		}
+
 
 		igPushStyleColor_U32(ImGuiCol_Button, 0xCC0000FF);
 		igPushStyleColor_U32(ImGuiCol_ButtonHovered, 0xAA0000FF);
@@ -118,7 +144,6 @@ int main(int argc, char* argv[]) {
 
 		glfwSwapBuffers(window);
 	}
-	glfwDestroyWindow(window);
 
 	srand(seed);
 
@@ -128,6 +153,7 @@ int main(int argc, char* argv[]) {
 		printf("Could not open training data files.");
 		return -1;
 	}
+	glfwDestroyWindow(window);
 
 	struct Vector* training_images = NULL;
 	char* training_labels = NULL;
@@ -148,6 +174,8 @@ int main(int argc, char* argv[]) {
 		matrix_random_init(&weights[i]);
 	}
 
+	printf("Loading training data...\n");
+
 	FILE* test_images_file = fopen("mnist/t10k-images.idx3-ubyte", "rb");
 	FILE* test_labels_file = fopen("mnist/t10k-labels.idx1-ubyte", "rb");
 	if (test_images_file == NULL | test_labels_file == NULL) {
@@ -163,8 +191,11 @@ int main(int argc, char* argv[]) {
 	fclose(test_images_file);
 	fclose(test_labels_file);
 
-	sgd(weights, biases, training_images, training_labels, test_images, test_labels, 10000, training_images_count, 10, 30, layer_count, 3);
+	printf("[ ==== TRAINING ==== ]\n");
 
+	sgd(weights, biases, training_images, training_labels, test_images, test_labels, test_images_count, training_images_count, minibatch_size, epochs, layer_count, learning_rate);
+
+	printf("[ ==== TRAINING COMPLETE ==== ]\n");
 	free(layer_sizes);
 
 	for (int i = 0; i < layer_count - 1; i++) {

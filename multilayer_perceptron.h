@@ -11,9 +11,8 @@ struct Vector feed_forward(const int layer_count, const struct Matrix* weights,
 
 void sgd(struct Matrix* weights, struct Vector* biases,
 	const struct Vector* training_images, const char* training_labels,
-	const struct Vector* test_images, const char* test_labels, 
-	const int test_size, const int training_size, const int minibatch_size, 
-	const int training_data_size, const int layer_count, const double 
-	learning_rate);
+	const struct Vector* test_images, const char* test_labels, const int test_size,
+	const int training_size, const int minibatch_size, const int epochs,
+	const int layer_count, const double learning_rate);
 
 #endif

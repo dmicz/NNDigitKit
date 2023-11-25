@@ -147,7 +147,7 @@ void sgd(struct Matrix* weights, struct Vector* biases,
 			vector_free(output);
 		}
 		avg_cost /= test_size;
-		printf("Correct: %d/%d\tAccuracy: %f\tCost: %f\tEpoch:%d/%d\n", correct, test_size, (double)correct / test_size, avg_cost, epoch + 1, epochs);
+		printf("Correct: %d/%d\tAccuracy: %f\tCost: %f\tEpoch: %d/%d\n", correct, test_size, (double)correct / test_size, avg_cost, epoch + 1, epochs);
 	}
 	free(labels);
 }
