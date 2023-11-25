@@ -58,7 +58,15 @@ int main(int argc, char* argv[]) {
 	igStyleColorsDark(NULL);
 
 	int width, height;
-	
+
+	int seed = 1698931523;
+
+	const int MAX_LAYER_COUNT = 6;
+	int* layer_sizes = malloc(MAX_LAYER_COUNT * sizeof(int));
+	layer_sizes = (int[6]){ 784, 100, 10, 0, 0, 0 };
+	int layer_count = 3;
+
+
 	double time = glfwGetTime();
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -66,12 +74,27 @@ int main(int argc, char* argv[]) {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		igNewFrame();
-		igBegin("NNDigitKit Config", NULL, ImGuiWindowFlags_MenuBar);
-		igEnd();
 
-		igBegin("Test", NULL, 0);
-		igText("Test");
-		igButton("Test", (struct ImVec2) { 0, 0 });
+		igBegin("NNDigitKit Config", NULL, 0);
+
+		igInputInt("Seed", &seed, NULL, NULL, NULL);
+
+		if (igSliderInt("Layer count", &layer_count, 2, 6, NULL, ImGuiSliderFlags_None)) {
+			layer_sizes[layer_count - 1] = 10;
+		}
+		for (int i = 0; i < layer_count; i++) {
+			char label[8];
+			snprintf(label, sizeof(label), "Layer %d", i + 1);
+			igInputInt(label, &layer_sizes[i], NULL, NULL, ((i == 0 || i == layer_count - 1) ? ImGuiInputTextFlags_ReadOnly : ImGuiInputTextFlags_None));
+		}
+
+		igPushStyleColor_U32(ImGuiCol_Button, 0xCC0000FF);
+		igPushStyleColor_U32(ImGuiCol_ButtonHovered, 0xAA0000FF);
+		igPushStyleColor_U32(ImGuiCol_ButtonActive, 0x663333FF);
+		if (igButton("Start SGD", (struct ImVec2) { 0, 0 })) {
+			glfwSetWindowShouldClose(window, true);
+		}
+		igPopStyleColor(3);
 		igEnd();
 
 		// igShowDemoWindow(NULL);
@@ -90,10 +113,7 @@ int main(int argc, char* argv[]) {
 	}
 	glfwDestroyWindow(window);
 
-	srand(1698931523);
-
-	int layer_sizes[] = { 784, 100, 10 };
-	int layer_count = sizeof(layer_sizes) / sizeof(int);
+	srand(seed);
 
 	FILE* training_images_file = fopen("mnist/train-images.idx3-ubyte", "rb");
 	FILE* training_labels_file = fopen("mnist/train-labels.idx1-ubyte", "rb");
@@ -138,6 +158,7 @@ int main(int argc, char* argv[]) {
 
 	sgd(weights, biases, training_images, training_labels, test_images, test_labels, 10000, training_images_count, 10, 30, layer_count, 3);
 
+	free(layer_sizes);
 
 	for (int i = 0; i < layer_count - 1; i++) {
 		free_matrix(weights[i]);
@@ -156,6 +177,7 @@ int main(int argc, char* argv[]) {
 	}
 	free(test_images);
 	free(test_labels);
+
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
