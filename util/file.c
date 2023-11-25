@@ -28,7 +28,7 @@ int read_image_file(const FILE* file, struct Vector** images) {
 	for (int i = 0; i < image_count; i++) {
 		new_images[i] = vector_create(vector_size);
 		for (int j = 0; j < vector_size; j++) {
-			new_images[i].elements[j] = ((double)new_images_bytes[i * vector_size + j]) / 256.;
+			new_images[i].elements[j] = ((float)new_images_bytes[i * vector_size + j]) / 256.;
 		}
 	}
 

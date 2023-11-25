@@ -2,20 +2,21 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <xmmintrin.h>
 #include "../util/math_utils.h"
 
 struct Matrix matrix_create(const int rows, const int columns) {
 	struct Matrix matrix;
 	matrix.rows = rows;
 	matrix.columns = columns;
-	matrix.elements = malloc(rows * sizeof(double*));
+	matrix.elements = malloc(rows * sizeof(float*));
 	if (matrix.elements == NULL) {
 		printf("Error allocating vector of length %d", rows);
 		return (struct Matrix) { 0, 0, NULL };
 	}
 
 	for (int i = 0; i < rows; i++) {
-		matrix.elements[i] = malloc(columns * sizeof(double));
+		matrix.elements[i] = malloc(columns * sizeof(float));
 		if (matrix.elements[i] == NULL) {
 			printf("Error allocating vector of length %d", columns);
 			return (struct Matrix) { 0, 0, NULL };
@@ -38,11 +39,21 @@ struct Vector matrix_vector_multiply(const struct Matrix matrix, const struct Ve
 	}
 
 	struct Vector result = vector_create(matrix.rows);
+
 	for (int i = 0; i < matrix.rows; i++) {
 		result.elements[i] = 0.;
-		for (int j = 0; j < matrix.columns; j++) {
-			result.elements[i] += matrix.elements[i][j] * vector.elements[j];
+		float sum = 0.;
+		int j = 0;
+		for (; j < matrix.columns - 3; j += 4) {
+			sum += matrix.elements[i][j] * vector.elements[j] +
+				matrix.elements[i][j + 1] * vector.elements[j + 1] +
+				matrix.elements[i][j + 2] * vector.elements[j + 2] +
+				matrix.elements[i][j + 3] * vector.elements[j + 3];
+		}	
+		for (; j < matrix.columns; j++) {
+			sum += matrix.elements[i][j] * vector.elements[j];
 		}
+		result.elements[i] = sum;
 	}
 
 	return result;

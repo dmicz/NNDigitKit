@@ -4,6 +4,10 @@
 #include "linalg/matrix.h"
 #include "linalg/vector.h"
 
+struct MultilayerPerceptron {
+	int x;
+};
+
 struct Vector create_label_vector(const int nodes, const int label_value);
 
 struct Vector feed_forward(const int layer_count, const struct Matrix* weights,
@@ -13,6 +17,6 @@ void sgd(struct Matrix* weights, struct Vector* biases,
 	const struct Vector* training_images, const char* training_labels,
 	const struct Vector* test_images, const char* test_labels, const int test_size,
 	const int training_size, const int minibatch_size, const int epochs,
-	const int layer_count, const double learning_rate);
+	const int layer_count, const float learning_rate);
 
 #endif

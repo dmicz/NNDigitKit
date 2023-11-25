@@ -5,7 +5,7 @@
 
 struct Matrix {
 	int rows, columns;
-	double** elements;
+	float** elements;
 };
 
 struct Matrix matrix_create(const int rows, const int columns);

@@ -7,7 +7,7 @@
 struct Vector vector_create(int length) {
 	struct Vector vector;
 	vector.length = length;
-	vector.elements = malloc(length * sizeof(double));
+	vector.elements = malloc(length * sizeof(float));
 	if (vector.elements == NULL) {
 		printf("Error allocating vector of length %d", length);
 		return (struct Vector) { 0, NULL };
@@ -57,7 +57,7 @@ void vector_free(struct Vector vector) {
 	free(vector.elements);
 }
 
-double dot_product(const struct Vector vector1, const struct Vector vector2) {
+float dot_product(const struct Vector vector1, const struct Vector vector2) {
 	if (vector1.length != vector2.length) {
 		printf("Error performing binary operation on vectors: vectors are different sizes\n");
 		return 0;
@@ -68,14 +68,14 @@ double dot_product(const struct Vector vector1, const struct Vector vector2) {
 	}
 }
 
-double func_add_doubles(double a, double b) { return a + b; }
+float func_add_floats(float a, float b) { return a + b; }
 
-double func_subtract_doubles(double a, double b) { return a - b; }
+float func_subtract_floats(float a, float b) { return a - b; }
 
-double func_hadamard_product(double a, double b) { return a * b; }
+float func_hadamard_product(float a, float b) { return a * b; }
 
-double func_negate_double(double a) { return -a; }
+float func_negate_float(float a) { return -a; }
 
-double func_zero_double(double a) { return 0; }
+float func_zero_float(float a) { return 0; }
 
-double func_std_norm_dist(double a) { return generate_std_norm_dist(); }
+float func_std_norm_dist(float a) { return generate_std_norm_dist(); }

@@ -71,7 +71,6 @@ int main(int argc, char* argv[]) {
 
 	int minibatch_size = 10, epochs = 30, learning_rate = 3;
 
-	double time = glfwGetTime();
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 
@@ -88,6 +87,9 @@ int main(int argc, char* argv[]) {
 		
 		igText("Random seeding");
 		igInputInt("Seed", &seed, NULL, NULL, NULL);
+		if (igButton("Use time()", (struct ImVec2) { 0, 0 })) {
+			seed = time(NULL);
+		}
 		igSeparator();
 
 		igText("Layer Settings");

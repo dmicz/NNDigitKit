@@ -3,11 +3,11 @@
 
 struct Vector {
 	int length;
-	double* elements;
+	float* elements;
 };
 
-typedef double (*binary_operation)(double, double);
-typedef double (*unary_operation)(double);
+typedef float (*binary_operation)(float, float);
+typedef float (*unary_operation)(float);
 
 struct Vector vector_create(int length);
 void vector_free(struct Vector vector);
@@ -20,12 +20,12 @@ void vector_apply_binary_operation(struct Vector vector1,
 void vector_apply_unary_operation(struct Vector vector, 
 	unary_operation operator);
 
-double dot_product(const struct Vector vector1, const struct Vector vector2);
-double func_add_doubles(double a, double b);
-double func_subtract_doubles(double a, double b);
-double func_hadamard_product(double a, double b);
-double func_negate_double(double a);
-double func_zero_double(double a);
-double func_std_norm_dist(double a);
+float dot_product(const struct Vector vector1, const struct Vector vector2);
+float func_add_floats(float a, float b);
+float func_subtract_floats(float a, float b);
+float func_hadamard_product(float a, float b);
+float func_negate_float(float a);
+float func_zero_float(float a);
+float func_std_norm_dist(float a);
 
 #endif
