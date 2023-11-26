@@ -3,20 +3,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../linalg/vector.h"
+#include "../util/math_utils.h"
 
 struct LabeledData read_labeled_image_files(const char* image_file_name, const char* label_file_name) {
 	FILE* image_file = fopen(image_file_name, "rb");
 	struct LabeledData read_data;
 
-	unsigned char* magic_number_bytes = malloc(4 * sizeof(char));
-	unsigned char* image_count_bytes = malloc(4 * sizeof(char));
-	unsigned char* row_count_bytes = malloc(4 * sizeof(char));
-	unsigned char* column_count_bytes = malloc(4 * sizeof(char));
+	unsigned char magic_number_bytes[4];
+	unsigned char image_count_bytes[4];
+	unsigned char row_count_bytes[4];
+	unsigned char column_count_bytes[4];
 
-	fread((void*)magic_number_bytes, sizeof(char), 4, image_file);
-	fread((void*)image_count_bytes, sizeof(char), 4, image_file);
-	fread((void*)row_count_bytes, sizeof(char), 4, image_file);
-	fread((void*)column_count_bytes, sizeof(char), 4, image_file);
+	fread(magic_number_bytes, sizeof(char), 4, image_file);
+	fread(image_count_bytes, sizeof(char), 4, image_file);
+	fread(row_count_bytes, sizeof(char), 4, image_file);
+	fread(column_count_bytes, sizeof(char), 4, image_file);
 
 	int image_count = byte_array_to_big_endian(image_count_bytes);
 	int row_count = byte_array_to_big_endian(row_count_bytes);
@@ -25,7 +26,7 @@ struct LabeledData read_labeled_image_files(const char* image_file_name, const c
 	int pixel_count = image_count * row_count * column_count;
 
 	unsigned char* new_images_bytes = malloc(pixel_count * sizeof(char));
-	fread((void*)new_images_bytes, sizeof(char), pixel_count, image_file);
+	fread(new_images_bytes, sizeof(char), pixel_count, image_file);
 
 	int vector_size = row_count * column_count;
 	struct Vector* new_images = malloc(image_count * sizeof(struct Vector));
@@ -35,11 +36,6 @@ struct LabeledData read_labeled_image_files(const char* image_file_name, const c
 			new_images[i].elements[j] = ((float)new_images_bytes[i * vector_size + j]) / 256.;
 		}
 	}
-
-	free(magic_number_bytes);
-	free(image_count_bytes);
-	free(row_count_bytes);
-	free(column_count_bytes);
 	free(new_images_bytes);
 
 	fclose(image_file);
@@ -48,20 +44,16 @@ struct LabeledData read_labeled_image_files(const char* image_file_name, const c
 	read_data.size = image_count;
 
 	FILE* label_file = fopen(label_file_name, "rb");
-	magic_number_bytes = malloc(4 * sizeof(char));
-	unsigned char* label_count_bytes = malloc(4 * sizeof(char));
+	unsigned char* label_count_bytes[4];
 
-	fread((void*)magic_number_bytes, sizeof(char), 4, label_file);
-	fread((void*)label_count_bytes, sizeof(char), 4, label_file);
+	fread(magic_number_bytes, sizeof(char), 4, label_file);
+	fread(label_count_bytes, sizeof(char), 4, label_file);
 
 	int label_count = byte_array_to_big_endian(label_count_bytes);
 
 	char* new_labels = malloc(label_count * sizeof(char));
-	fread((void*)new_labels, sizeof(char), label_count, label_file);
+	fread(new_labels, sizeof(char), label_count, label_file);
 	read_data.labels = new_labels;
-
-	free(magic_number_bytes);
-	free(label_count_bytes);
 	
 	fclose(label_file);
 

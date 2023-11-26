@@ -19,12 +19,12 @@
 #include "linalg/matrix.h"
 #include "multilayer_perceptron.h"	
 
-void error_callback(int error, const char* description)
+void glfw_error_callback(int error, const char* description)
 {
 	fprintf(stderr, "Error: %s\n", description);
 }
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 	}
@@ -32,7 +32,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 
 int main(int argc, char* argv[]) {
-	glfwSetErrorCallback(error_callback);
+	glfwSetErrorCallback(glfw_error_callback);
 	if (!glfwInit()) {
 		return 1;
 	}
@@ -42,9 +42,10 @@ int main(int argc, char* argv[]) {
 	GLFWwindow* window = glfwCreateWindow(480, 480, "NNDigitKit", NULL, NULL);
 	if (!window)
 	{
+		printf("GLFW could not create window");
 		return 1;
 	}
-	glfwSetKeyCallback(window, key_callback);
+	glfwSetKeyCallback(window, glfw_key_callback);
 
 	glfwMakeContextCurrent(window);
 	gladLoadGL(glfwGetProcAddress);
@@ -97,13 +98,29 @@ int main(int argc, char* argv[]) {
 		if (igSliderInt("Layer count", &layer_count, 2, 6, NULL, ImGuiSliderFlags_None)) {
 			layer_sizes[layer_count - 1] = 10;
 		}
+
+		igSeparator();
+
 		for (int i = 0; i < layer_count; i++) {
-			char label[8];
-			snprintf(label, sizeof(label), "Layer %d", i + 1);
+			char label[13];
+			if (i == 0) {
+				igPushStyleColor_U32(ImGuiCol_FrameBg, 0xAA3a2817);
+				snprintf(label, sizeof(label), "Input Layer");
+			}
+			else if (i == layer_count - 1) {
+				igPushStyleColor_U32(ImGuiCol_FrameBg, 0xAA3a2817);
+				snprintf(label, sizeof(label), "Output Layer");
+			}
+			else {
+				igPushStyleColor_U32(ImGuiCol_FrameBg, 0xFF482E1D);
+				snprintf(label, sizeof(label), "Layer %d", i + 1);
+			}
+
 			if (igInputInt(label, &layer_sizes[i], NULL, NULL, ((i == 0 || i == layer_count - 1) ? ImGuiInputTextFlags_ReadOnly : ImGuiInputTextFlags_None))) {
 				if (layer_sizes[i] < 1) layer_sizes[i] = 1;
 				else if (layer_sizes[i] > MAX_LAYER_SIZE) layer_sizes[i] = MAX_LAYER_SIZE;
 			}
+			igPopStyleColor(1);
 		}
 
 		igSeparator();

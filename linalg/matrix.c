@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <xmmintrin.h>
+#include <immintrin.h>
 #include "../util/math_utils.h"
 
 struct Matrix matrix_create(const int rows, const int columns) {
@@ -41,6 +41,25 @@ struct Vector matrix_vector_multiply(const struct Matrix matrix, const struct Ve
 	struct Vector result = vector_create(matrix.rows);
 
 	for (int i = 0; i < matrix.rows; i++) {
+		float temp = 0.0f;
+		__m256 sum = _mm256_setzero_ps();
+		int j = 0;
+		for (j = 0; j < matrix.columns - 7; j += 8) {
+			__m256 m = _mm256_loadu_ps(matrix.elements[i] + j);
+			__m256 v = _mm256_loadu_ps(vector.elements + j);
+			sum = _mm256_add_ps(sum, _mm256_mul_ps(m, v));
+		}
+
+		__m128 sum128 = _mm_add_ps(_mm256_extractf128_ps(sum, 0), _mm256_extractf128_ps(sum, 1));
+		float sumArray[4];
+		_mm_storeu_ps(sumArray, sum128);
+		temp = sumArray[0] + sumArray[1] + sumArray[2] + sumArray[3];
+
+		for (; j < matrix.columns; j++) {
+			temp += matrix.elements[i][j] * vector.elements[j];
+		}
+		result.elements[i] = temp;
+		/*
 		result.elements[i] = 0.;
 		float sum = 0.;
 		int j = 0;
@@ -54,6 +73,7 @@ struct Vector matrix_vector_multiply(const struct Matrix matrix, const struct Ve
 			sum += matrix.elements[i][j] * vector.elements[j];
 		}
 		result.elements[i] = sum;
+		*/
 	}
 
 	return result;
