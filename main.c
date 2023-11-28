@@ -70,7 +70,8 @@ int main(int argc, char* argv[]) {
 	layer_sizes[2] = 10;
 	int layer_count = 3;
 
-	int minibatch_size = 10, epochs = 30, learning_rate = 3;
+	int minibatch_size = 10, epochs = 30;
+	float learning_rate = 3.0;
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -134,9 +135,9 @@ int main(int argc, char* argv[]) {
 			if (epochs < 1) epochs = 1;
 			else if (epochs > 100) epochs = 100;
 		}
-		if (igInputInt("Learning Rate", &learning_rate, NULL, NULL, ImGuiInputTextFlags_None)) {
-			if (learning_rate < 0) learning_rate = 0;
-			else if (learning_rate > 100) learning_rate = 100;
+		
+		if (igInputFloat("Learning Rate", &learning_rate, 0.0f, 0.0f, "%.2f", ImGuiInputTextFlags_None)) {
+			if (learning_rate < 0.0f) learning_rate = 0.0f;
 		}
 
 
