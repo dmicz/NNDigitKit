@@ -15,8 +15,7 @@ float sigmoid(const float z) {
 }
 
 float sigmoid_prime(const float z) {
-	float ez = exp(-z);
-	return ez / ((1 + ez) * (1 + ez));
+	return sigmoid(z)*(1-sigmoid(z));
 }
 
 float tanh_prime(const float z) {
