@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "../linalg/vector.h"
 #include "../util/math_utils.h"
+#include "../multilayer_perceptron.h"
 
 struct LabeledData read_labeled_image_files(const char* image_file_name, const char* label_file_name) {
 	FILE* image_file = fopen(image_file_name, "rb");
@@ -66,4 +67,40 @@ void free_labeled_data(struct LabeledData data) {
 	}
 	free(data.images);
 	free(data.labels);
+}
+
+void save_multilayerperceptron(struct MultilayerPerceptron model) {
+	FILE* model_file = fopen("multilayer-perceptron.bin", "wb");
+
+	fwrite(&model.layer_count, 1, sizeof(int), model_file);
+	fwrite(model.layer_sizes, model.layer_count, sizeof(int), model_file);
+	for (int i = 0; i < model.layer_count - 1; i++) {
+		for (int j = 0; j < model.weights[i].rows; j++) {
+			fwrite(model.weights[i].elements[j], model.weights[i].columns, sizeof(float), model_file);
+		}
+		fwrite(model.biases[i].elements, model.biases[i].length, sizeof(float), model_file);
+	}
+
+	fclose(model_file);
+}
+
+struct MultilayerPerceptron load_multilayerperceptron(const char* model_file_name) {
+	FILE* model_file = fopen(model_file_name, "rb");
+
+	int layer_count;
+	fread(&layer_count, 1, sizeof(int), model_file);
+	int* layer_sizes = malloc(layer_count * sizeof(int));
+	fread(layer_sizes, layer_count, sizeof(int), model_file);
+	
+	struct MultilayerPerceptron model;
+	model = multilayerperceptron_create(layer_count, layer_sizes);
+	for (int i = 0; i < model.layer_count - 1; i++) {
+		for (int j = 0; j < model.layer_sizes[i + 1]; j++) {
+			fread(model.weights[i].elements[j], model.layer_sizes[i], sizeof(float), model_file);
+		}
+		fread(model.biases[i].elements, model.layer_sizes[i + 1], sizeof(float), model_file);
+	}
+	
+	fclose(model_file);
+	return model;
 }

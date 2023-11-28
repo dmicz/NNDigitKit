@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
 	const int MAX_LAYER_SIZE = 1000;
 	int* layer_sizes = calloc(MAX_LAYER_COUNT, sizeof(int));
 	layer_sizes[0] = 784;
-	layer_sizes[1] = 100;
+	layer_sizes[1] = 30;
 	layer_sizes[2] = 10;
 	int layer_count = 3;
 
@@ -182,6 +182,8 @@ int main(int argc, char* argv[]) {
 	sgd(neural_network, training_data, testing_data, minibatch_size, epochs, learning_rate);
 
 	printf("[ ==== TRAINING COMPLETE ==== ]\n");
+	save_multilayerperceptron(neural_network);
+	
 	multilayerperceptron_free(&neural_network);
 
 	free_labeled_data(training_data);

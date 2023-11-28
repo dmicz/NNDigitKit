@@ -154,7 +154,6 @@ void sgd(struct MultilayerPerceptron model, const struct LabeledData training_da
 			free(nabla_biases);
 			free(delta_nabla_weights);
 			free(delta_nabla_biases);
-
 		}
 		int correct = 0;
 		float avg_cost = 0.;
@@ -164,7 +163,8 @@ void sgd(struct MultilayerPerceptron model, const struct LabeledData training_da
 			int ans = 0;
 			float cost = 0.;
 			for (int j = 0; j < output.length; j++) {
-				if (output.elements[j] > output.elements[ans]) ans = j;
+				if (output.elements[j] > output.elements[ans]) 
+					ans = j;
 				cost += pow(output.elements[j] - (testing_data.labels[test] == j ? 1 : 0), 2);
 			}
 			if (ans == testing_data.labels[test]) correct++;
