@@ -7,7 +7,6 @@ NNDigitKit is a digit recognition system designed to analyze 28x28 monochrome im
 
 - [Project Status](#project-status)
 - [Overview](#overview)
-- [Parameters](#parameters)
 - [Building](#building)
 - [Usage](#usage)
 - [Contributing](#contributing)
@@ -19,20 +18,9 @@ NNDigitKit is a digit recognition system designed to analyze 28x28 monochrome im
 
 ## Overview
 
-Currently, the core functionality of NNDigitKit in within the sgd function, which trains a configurable multilayer perceptron. This function has various parameters that are editable through the configuration GUI prior to training.
+![image](https://github.com/dmicz/NNDigitKit/assets/107702866/eab3ae8d-20cb-4b29-a4c9-a25aadf8afed)
 
-## Parameters
-
-The `sgd` function in main enables modification of parameters to any desired value:
-```c
-void sgd(struct Matrix* weights, struct Vector* biases,
-	const struct Vector* training_images, const char* training_labels,
-	const struct Vector* test_images, const char* test_labels, const int test_size,
-	const int training_size, const int minibatch_size, const int epochs,
-	const int layer_count, const double learning_rate)
-```
-
-The function and GUI allows fine-tuning of critical parameters. The default parameters, when used with the default `srand` seed, achieve a maximum of 97% accuracy.
+NNDigitKit makes training neural networks on the MNIST database simple, featuring a simple GUI to configure various parameters of the neural network, allowing quicker configuration and iterative improvement on neural network hyperparameters.
 
 ## Building
 
@@ -48,9 +36,23 @@ To get started, follow these steps:
 - Build the project using either debug configuration for debugging or release for an optimized executable.
 
 ## Usage
+
 The default multilayer perceptron model is configurable through the GUI, which currently has options for layer count and size, training batch sizes, number of epochs, and learning rate.
 
-![image](https://github.com/dmicz/NNDigitKit/assets/107702866/b3ed8361-ac19-430b-a7c1-2596ad725ece)
+The GUI allows fine-tuning of critical parameters. Parameters and their functions are listed below:
+**Random seeding**
+- **Seed**: Integer passed to `srand()` to initialize parameters of neural network, click `Use time()` to replace the seed with the current Unix timestamp.
+
+**Layer settings**
+- **Layer count**: Number of total layers (hidden + 1 input + 1 output) of the network. Currently limited from 2 (no hidden layers) to 6.
+- **Layer x**: Number of neurons in each hidden layer. Neurons in input/output layers currently cannot be edited (784 input for each pixel in 28x28 image, 10 output for each decimal digit). Currently limited from 1 neuron to 1000 neurons.
+
+**Other hyperparameters**
+- **Mini-batch size**: Size of mini-batch used in stochastic gradient descent, limited from 1 to 60000 (size of training data). If training set size isn't divisible my mini-batch size, the remaining examples are ignored (all training data is shuffled every epoch).
+- **Epochs**: Number of iterations of SGD before terminating the training.
+- **Learning rate**: Float value multiplied by SGD deltas to speed/slow learning. Must be at least 0, is scaled automatically by mini-batch size.
+
+The model is saved in `multilayer-perceptron.bin` according to the `save_multilayerperceptron` in [`file.c`](util/file.c). Use the `load_multilayerperceptron` in the `main` function to load a model from file and continue training.
 
 ## Contributing
 
